@@ -1,18 +1,6 @@
 version: "3.1"
 
 services:
-  tomcat:
-    image: bitnami/tomcat:latest
-    environment:
-      - TOMCAT_USERNAME=root
-      - TOMCAT_PASSWORD=password
-    links:
-      - db:mysql
-    ports:
-      - 8585:8080
-    volumes:
-      - ./tomcat:/bitnami/tomcat
-
   db:
     image: postgres
     container_name: db
