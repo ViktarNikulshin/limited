@@ -4,17 +4,9 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <title>All report</title>
 </head>
-<link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
+<link th:href="@{css/bootstrap.min.css}" rel="stylesheet">
 <body>
-<br>
 <div class="container">
-    <br/>
-    <div class="row right">
-        <a href="/report">
-            <button type="button" class="btn btn-lg btn-primary">Создать</button>
-        </a>
-    </div>
-    <br/>
     <div class="row">
         <div class="col-md-12">
             <table class="table table-bordered">
@@ -24,7 +16,6 @@
                     <th> Адрес</th>
                     <th> Цена</th>
                     <th> Номер телефона</th>
-                    <th> Действие</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -32,42 +23,34 @@
                     <td colspan="2"> Нет заказов</td>
                 </tr>
                 <tr th:each="report : ${reports}">
-                    <td hidden><input name="id" th:value="${report.getId()}"></td>
-                    <td hidden><input name="phoneNumber" th:value="${report.getPhoneNumber()}"></td>
-                    <td>
-                        <input readonly name="mobile" th:value="${report.getMobile()}"/>
-                    </td>
-                    <td style="font-size: small" th:object="${report.address}">
-                        <span th:text="*{city}"></span> ул.<span th:text="*{street}"></span>
-                        д.<span th:text="*{house}"></span> кор.<span th:text="*{building}"></span>
-                        кв.<span th:text="*{flat}"></span> под.<span th:text="*{entrance}"></span>
-                        эт.<span th:text="*{floor}"></span>
-                    </td>
-                    <td><input type="text" style="width: 80px" name="prise" id="prise"
-                               th:value="${report.getPrise()}"></td>
-                    <td><a th:href="'tel:'+${report.getPhoneNumber()}"><p th:text="${report.getPhoneNumber()}"></p>
-                    </a>
-                    </td>
-                    <td>
-                        <div class="btn-group">
-                            <a class="btn btn-outline-info" th:href="@{'/report/' + ${report.getId()}}">edit</a>
-                            <a class="btn btn-outline-danger"
-                               th:href="@{'/report/delete/' + ${report.getId()}}">Del</a>
-                        </div>
-                    </td>
+                    <form th:action="@{'/reportsave'}" th:object="${report}" method="post">
+                        <td hidden><input name="id" th:value="${report.getId()}"></td>
+                        <td hidden><input name="phoneNumber" th:value="${report.getPhoneNumber()}"></td>
+                        <td>
+                            <textarea style="width: 200px; font-size: 14px;"
+                                      name="mobile" id="mobile"
+                                      th:text="${report.getMobile()}"></textarea>
+                        </td>
+                        <td>
+                            <textarea style="width: 600px; font-size: 14px;"
+                                      name="address" id="address"
+                                      th:text="${report.getAddress()}"></textarea>
+                        </td>
+                        <td><input type="number" style="width: 100px" name="prise" id="prise" th:value="${report.getPrise()}"></td>
+                        <td><a th:href="'tel:'+${report.getPhoneNumber()}"><p th:text="${report.getPhoneNumber()}"></p>
+                        </a>
+                        </td>
+                        <td>
+
+                            <button type="submit" class="btn btn-lg btn-success">Редактировать</button>
+
+                        </td>
+                    </form>
                 </tr>
                 </tbody>
             </table>
         </div>
-        <div class="col-7">
-            <a class="btn btn-outline-success" th:href="@{'/map'}">Карта</a>
-        </div>
-        <div class="col-4">
-            <input class="text " th:value="${sum}">
-        </div>
-        <br/>
     </div>
-    <br/>
 </div>
 
 </body>

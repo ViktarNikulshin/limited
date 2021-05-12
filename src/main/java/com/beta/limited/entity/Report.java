@@ -15,11 +15,9 @@ public class Report {
     private String mobile;
     @Column
     private Double prise;
-    @Column(name = "order_text")
-    private String order;
+    @Column
+    private String address;
     @Column
     private String phoneNumber;
-    @OneToOne(mappedBy = "report", cascade = CascadeType.ALL)
-    @PrimaryKeyJoinColumn
-    private Address address;
+
 }
