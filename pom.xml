@@ -10,12 +10,13 @@
 	</parent>
 	<groupId>com.beta</groupId>
 	<artifactId>limited</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
 	<packaging>war</packaging>
 	<name>limited</name>
+	<version>20.0.0</version>
 	<description>TexnoMir</description>
 	<properties>
 		<java.version>1.8</java.version>
+		<start-class>com.beta.limited.LimitedApplication</start-class>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -70,6 +71,7 @@
 	</dependencies>
 
 	<build>
+		<finalName>limited</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>

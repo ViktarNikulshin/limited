@@ -1,14 +1,20 @@
+
+
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5433/postgres
+    url: jdbc:postgresql://52.14.231.237:5432/postgres
     username: vnikulshin
     password: admin
     driver-class-name: org.postgresql.Driver
     initialization-mode: always
     schema: classpath*:sql/initDB.sql
+
   jpa:
     database: postgresql
     database-platform: org.hibernate.dialect.PostgreSQL10Dialect
+    show-sql: true
 bot:
   name: VNikulshin_bot
   token: 1512700278:AAHworP0q1zZLRuh7VuiKtRhcqXnBsNWwXo
+
+
