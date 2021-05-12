@@ -5,8 +5,77 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 </head>
 <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
-<body>
-<H3> Привет </H3>
+<script src="https://api-maps.yandex.ru/2.1/?lang=ru_RU&amp;apikey=973829b4-a3c6-4e90-9108-34f5e90828d2" type="text/javascript"></script>
+<script src="/js/search.js"></script>
 
+<body>
+<div class="container">
+    <br>
+    <form th:action="@{'/reportsave'}" method="post">
+        <div class="form-group">
+            <div class="mb-3 row">
+                <label class="col-sm-2 col-form-label">ID</label>
+                <div class="col-sm-10">
+                    <input type="text" readonly class="form-control-plaintext" th:field="*{report.id}">
+                </div>
+            </div>
+            <div class="mb-3 row">
+                <label class="col-sm-2 col-form-label">Модель</label>
+                <div class="col-10">
+            <textarea class="form-control" th:field="*{report.mobile}"></textarea>
+                </div>
+            </div>
+            <div class="mb-3 row">
+                <label class="col-sm-2 col-form-label">Цена</label>
+                <div class="col-10">
+                    <input class="form-control" name="prise" th:value="${report.prise}">
+                </div>
+            </div>
+            <div class="mb-3 row">
+                <label class="col-sm-2 col-form-label">Адрес</label>
+                <div class="col-10">
+                    <div class="form-row">
+                        <div class="col-9">
+                            <input type="text" class="form-control" id="address" placeholder="Город" th:field="*{address.city}">
+                        </div>
+                    </div>
+                    <br/>
+                    <div class="form-row">
+                        <div class="col-2">
+                            <input type="text" class="form-control" placeholder="Дом" th:field="${address.house}">
+                        </div>
+                        <div class="col-2">
+                            <input type="text" class="form-control" placeholder="Корпус" th:field="${address.building}">
+                        </div>
+                        <div class="col-2">
+                            <input type="text" class="form-control" placeholder="Кв" th:field="${address.flat}">
+                        </div>
+                        <div class="col-2">
+                            <input type="text" class="form-control" placeholder="Подъез" th:field="${address.entrance}">
+                        </div>
+                        <div class="col-2">
+                            <input type="text" class="form-control" placeholder="Этаж" th:field="${address.floor}">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="mb-3 row">
+                <label class="col-sm-2 col-form-label">Телефон</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" th:field="*{report.phoneNumber}">
+                </div>
+            </div>
+            <div class="mb-3 row">
+                <label class="col-sm-2 col-form-label">Заказ</label>
+                <div class="col-10">
+            <textarea class="form-control" th:field="*{report.order}"></textarea>
+                </div>
+            </div>
+            <br>
+            <button type="submit" class="btn btn-lg btn-success">Up</button>
+        </div>
+    </form>
+</div>
 </body>
+
 </html>
