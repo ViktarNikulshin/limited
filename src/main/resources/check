@@ -1,4 +1,4 @@
-
+TEST
 
 
 if (agreedRequest.properties['applicantPosition'] && !currentRequest.properties['applicantPosition']) {
