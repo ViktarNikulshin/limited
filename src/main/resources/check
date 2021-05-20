@@ -1,0 +1,50 @@
+
+if (agreedRequest.properties['salary'][0].value != currentRequest.properties['salary'][0].value) {
+    return false;
+}
+
+if (agreedRequest.properties['numberOfEmployees'] != currentRequest.properties['numberOfEmployees']) {
+    return false;
+}
+
+
+if (agreedRequest.properties['persNadbavka'] != currentRequest.properties['persNadbavka']) {
+    return false;
+}
+
+if (agreedRequest.properties['applicantPosition'] && !currentRequest.properties['applicantPosition']) {
+    return false;
+} else if (!agreedRequest.properties['applicantPosition'] && currentRequest.properties['applicantPosition']) {
+    return false;
+}  else if (agreedRequest.properties['applicantPosition'] && currentRequest.properties['applicantPosition']) {
+    if (agreedRequest.properties['applicantPosition'][0].value != currentRequest.properties['applicantPosition'][0].value) {
+        return false;
+    }
+}
+
+if (agreedRequest.properties['openReason'][0].value != currentRequest.properties['openReason'][0].value) {
+    return false;
+}
+if (currentRequest.properties['openReason'][0].value == 'replace') {
+    if (agreedRequest.properties['replacementReason'][0].value != currentRequest.properties['replacementReason'][0].value) {
+        return false;
+    }
+    if (agreedRequest.properties['replacementName'].id != currentRequest.properties['replacementName'].id) {
+        return false;
+    }
+}
+if (currentRequest.properties['openReason'][0].value == 'parentalLeave') {
+    if (agreedRequest.properties['replacementName'].id != currentRequest.properties['replacementName'].id) {
+        return false;
+    }
+}
+if (currentRequest.properties['openReason'][0].value == 'postReason2') {
+    if (agreedRequest.properties['program'] != currentRequest.properties['program']) {
+        return false;
+    }
+    if (agreedRequest.properties['project'] != currentRequest.properties['project']) {
+        return false;
+    }
+}
+
+return true;
