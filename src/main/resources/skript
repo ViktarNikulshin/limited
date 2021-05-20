@@ -138,7 +138,7 @@ reservationRequest.put('status', 4);
 reservationRequest.put('persNadbavka', currentRequest.properties['persnadbavka'] ?  currentRequest.properties['persnadbavka'] : 0);
 reservationRequest.put('idLimCalend', currentRequest.properties['idLimCalend'] ?  currentRequest.properties['idLimCalend'] : 0);
 
-
+private void test
 
 
 reservationRequest ;
