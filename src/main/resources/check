@@ -3,9 +3,6 @@ if (agreedRequest.properties['salary'][0].value != currentRequest.properties['sa
     return false;
 }
 
-if (agreedRequest.properties['numberOfEmployees'] != currentRequest.properties['numberOfEmployees']) {
-    return false;
-}
 
 
 if (agreedRequest.properties['persNadbavka'] != currentRequest.properties['persNadbavka']) {
