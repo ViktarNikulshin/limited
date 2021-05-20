@@ -1,9 +1,4 @@
 
-if (agreedRequest.properties['salary'][0].value != currentRequest.properties['salary'][0].value) {
-    return false;
-}
-
-
 
 
 if (agreedRequest.properties['applicantPosition'] && !currentRequest.properties['applicantPosition']) {
