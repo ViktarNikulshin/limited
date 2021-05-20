@@ -5,6 +5,7 @@ if (agreedRequest.properties['salary'][0].value != currentRequest.properties['sa
 
 
 
+
 if (agreedRequest.properties['applicantPosition'] && !currentRequest.properties['applicantPosition']) {
     return false;
 } else if (!agreedRequest.properties['applicantPosition'] && currentRequest.properties['applicantPosition']) {
