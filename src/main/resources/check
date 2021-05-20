@@ -5,10 +5,6 @@ if (agreedRequest.properties['salary'][0].value != currentRequest.properties['sa
 
 
 
-if (agreedRequest.properties['persNadbavka'] != currentRequest.properties['persNadbavka']) {
-    return false;
-}
-
 if (agreedRequest.properties['applicantPosition'] && !currentRequest.properties['applicantPosition']) {
     return false;
 } else if (!agreedRequest.properties['applicantPosition'] && currentRequest.properties['applicantPosition']) {
