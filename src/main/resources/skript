@@ -86,8 +86,6 @@ reservationRequest.put('persNadbavka', currentRequest.properties['persnadbavka']
 reservationRequest.put('idLimCalend', currentRequest.properties['idLimCalend'] ?  currentRequest.properties['idLimCalend'] : 0);
 reservationRequest;
 
-
-------------------------------------------------------------
 def reservationRequest = new HashMap<String, Object>();
 def vacancyOpenReason = 1;
 if (currentRequest.properties['openReason'][0].value=='replace') {
