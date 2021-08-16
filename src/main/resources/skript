@@ -1,0 +1,144 @@
+def reservationRequest = new HashMap<String, Object>();
+def vacancyOpenReason = 1;
+if (currentRequest.properties['openReason'][0].value=='replace') {
+    vacancyOpenReason = 2;
+}  else if (currentRequest.properties['openReason'][0].value=='parentalLeave') {
+    vacancyOpenReason = 3;
+} else if (currentRequest.properties['openReason'][0].value=='postReason2') {
+    vacancyOpenReason = 4;
+}
+reservationRequest.put('requestExternalId', request.externalId);
+reservationRequest.put('vacancyOpenReason', vacancyOpenReason);
+reservationRequest.put('structExternalId',  request.properties['minessp'].externalId);
+reservationRequest.put('comment', currentRequest.properties['anotherReason'] ? currentRequest.properties['anotherReason'] : "");
+reservationRequest.put('positionCode', currentRequest.properties['applicantPosition'] ? currentRequest.properties['applicantPosition'][0].value : 0);
+reservationRequest.put('positionName', "");
+if (currentRequest.properties['positionComment']) {
+    if (reservationRequest.get('positionCode') == 0) {
+        reservationRequest.put('positionName', currentRequest.properties['positionComment']);
+    }  else {
+        reservationRequest.put('comment', (reservationRequest.get('comment') != "" ) ? ( " Дополнительно: " +  currentRequest.properties['positionComment']) : currentRequest.properties['positionComment']);
+    }
+}
+
+reservationRequest.put('projectId', currentRequest.properties['project'] ?  currentRequest.properties['project'] : 0);
+reservationRequest.put('employeesCount', currentRequest.properties['numberOfEmployees']);
+reservationRequest.put('salary', currentRequest.properties['salary'][0].value);
+reservationRequest.put('maxGrade', currentRequest.properties['grademax'] ? currentRequest.properties['grademax'][0].value : 0);
+reservationRequest.put('minGrade', currentRequest.properties['grademin'] ? currentRequest.properties['grademin'][0].value : 0);
+reservationRequest.put('insteadUserPId', currentRequest.properties['replacementName'] != null ?  currentRequest.properties['replacementName'].pid : 0);
+reservationRequest.put('rate', currentRequest.properties['rate'][0].value != null ? currentRequest.properties['rate'][0].value : currentRequest.properties['rateDecree']);
+reservationRequest.put('workStartDate', currentRequest.properties['workDate']);
+reservationRequest.put('developerRights', (currentRequest.properties['developer'][0].value=='developerNo' ) ? 0 : 1);
+if (currentRequest.properties['workplaceLocation'][0].value=='office' ) {
+    reservationRequest.put('workplaceLocation', 0);
+} else if (currentRequest.properties['workplaceLocation'][0].value=='remote' ) {
+    reservationRequest.put('workplaceLocation', 1);
+} else {
+    reservationRequest.put('workplaceLocation', 2);
+}
+reservationRequest.put('persNadbavka', currentRequest.properties['persnadbavka'] ?  currentRequest.properties['persnadbavka'] : 0);
+reservationRequest.put('idLimCalend', currentRequest.properties['idLimCalend'] ?  currentRequest.properties['idLimCalend'] : 0);
+reservationRequest;
+
+
+def reservationRequest = new HashMap<String, Object>();
+def vacancyOpenReason = 1;
+if (currentRequest.properties['openReason'][0].value=='replace') {
+    vacancyOpenReason = 2;
+}  else if (currentRequest.properties['openReason'][0].value=='parentalLeave') {
+    vacancyOpenReason = 3;
+} else if (currentRequest.properties['openReason'][0].value=='postReason2') {
+    vacancyOpenReason = 4;
+}
+reservationRequest.put('requestExternalId', request.externalId);
+reservationRequest.put('candidateApprovalRequestExternalId', request.externalId);
+reservationRequest.put('vacancyOpenReason', vacancyOpenReason);
+reservationRequest.put('structExternalId',  request.properties['minessp'].externalId);
+reservationRequest.put('comment', currentRequest.properties['anotherReason'] ? currentRequest.properties['anotherReason'] : "");
+reservationRequest.put('positionCode', currentRequest.properties['applicantPosition'] ? currentRequest.properties['applicantPosition'][0].value : 0);
+reservationRequest.put('positionName', "");
+if (currentRequest.properties['positionComment']) {
+    if (reservationRequest.get('positionCode') == 0) {
+        reservationRequest.put('positionName', currentRequest.properties['positionComment']);
+    }  else {
+        reservationRequest.put('comment', (reservationRequest.get('comment') != "" ) ? ( " Дополнительно: " +  currentRequest.properties['positionComment']) : currentRequest.properties['positionComment']);
+    }
+}
+
+reservationRequest.put('projectId', currentRequest.properties['project'] ?  currentRequest.properties['project'] : 0);
+reservationRequest.put('employeesCount', 1);
+reservationRequest.put('salary', currentRequest.properties['salary'][0].value);
+reservationRequest.put('maxGrade', currentRequest.properties['grademax'] ? currentRequest.properties['grademax'][0].value : 0);
+reservationRequest.put('minGrade', currentRequest.properties['grademin'] ? currentRequest.properties['grademin'][0].value : 0);
+reservationRequest.put('insteadUserPId', currentRequest.properties['replacementName'] != null ?  currentRequest.properties['replacementName'].pid : 0);
+reservationRequest.put('rate', currentRequest.properties['rate'] ? currentRequest.properties['rate'][0].value : currentRequest.properties['rateDecree']);
+reservationRequest.put('workStartDate', currentRequest.properties['workDate']);
+reservationRequest.put('developerRights', (currentRequest.properties['developer'][0].value=='developerNo' ) ? 0 : 1);
+if (currentRequest.properties['workplaceLocation'][0].value=='office' ) {
+    reservationRequest.put('workplaceLocation', 0);
+} else if (currentRequest.properties['workplaceLocation'][0].value=='remote' ) {
+    reservationRequest.put('workplaceLocation', 1);
+} else {
+    reservationRequest.put('workplaceLocation', 2);
+}
+reservationRequest.put('persNadbavka', currentRequest.properties['persnadbavka'] ?  currentRequest.properties['persnadbavka'] : 0);
+reservationRequest.put('idLimCalend', currentRequest.properties['idLimCalend'] ?  currentRequest.properties['idLimCalend'] : 0);
+reservationRequest;
+
+
+------------------------------------------------------------
+def reservationRequest = new HashMap<String, Object>();
+def vacancyOpenReason = 1;
+if (currentRequest.properties['openReason'][0].value=='replace') {
+    vacancyOpenReason = 2;
+}  else if (currentRequest.properties['openReason'][0].value=='parentalLeave') {
+    vacancyOpenReason = 3;
+} else if (currentRequest.properties['openReason'][0].value=='postReason2') {
+    vacancyOpenReason = 4;
+}
+reservationRequest.put('requestExternalId', vacancyRequest.externalId);
+reservationRequest.put('candidateApprovalRequestExternalId', request.externalId);
+reservationRequest .put('vacancyOpenReason', vacancyOpenReason);
+reservationRequest .put('structExternalId',  request.properties['minessp'].externalId);
+reservationRequest.put('comment', currentRequest.properties['anotherReason'] ? currentRequest.properties['anotherReason'] : "");
+reservationRequest.put('positionCode', currentRequest.properties['applicantPosition'] ? currentRequest.properties['applicantPosition'][0].value : 0);
+reservationRequest.put('positionName', "");
+if (currentRequest.properties['positionComment']) {
+    if (reservationRequest.get('positionCode') == 0) {
+        reservationRequest.put('positionName', currentRequest.properties['positionComment']);
+    }  else {
+        reservationRequest.put('comment', (reservationRequest.get('comment') != "" ) ? ( " Дополнительно: " +  currentRequest.properties['positionComment']) : currentRequest.properties['positionComment']);
+    }
+}
+
+
+
+reservationRequest .put('projectId', currentRequest.properties['project'] ?  currentRequest.properties['project'] : 0);
+reservationRequest .put('employeesCount', 1);
+reservationRequest .put('salary', currentRequest.properties['salary'][0].value);
+reservationRequest .put('maxGrade', currentRequest.properties['grademax'] ? currentRequest.properties['grademax'][0].value : 0);
+reservationRequest .put('minGrade', currentRequest.properties['grademin'] ? currentRequest.properties['grademin'][0].value : 0);
+reservationRequest.put('insteadUserPId', currentRequest.properties['replacementName'] != null ?  currentRequest.properties['replacementName'].pid : 0);
+reservationRequest.put('candidateFullName', currentRequest.properties['FIO']);
+reservationRequest.put('rate', currentRequest.properties['rate'] ? currentRequest.properties['rate'][0].value : currentRequest.properties['rateDecree']);
+reservationRequest.put('workStartDate', currentRequest.properties['workDate']);
+reservationRequest.put('developerRights', (currentRequest.properties['developer'][0].value=='developerNo' ) ? 0 : 1);
+
+
+
+if (currentRequest.properties['workplaceLocation'][0].value=='office' ) {
+    reservationRequest.put('workplaceLocation', 0);
+} else if (currentRequest.properties['workplaceLocation'][0].value=='remote' ) {
+    reservationRequest.put('workplaceLocation', 1);
+} else {
+    reservationRequest.put('workplaceLocation', 2);
+}
+reservationRequest.put('status', 4);
+reservationRequest.put('persNadbavka', currentRequest.properties['persnadbavka'] ?  currentRequest.properties['persnadbavka'] : 0);
+reservationRequest.put('idLimCalend', currentRequest.properties['idLimCalend'] ?  currentRequest.properties['idLimCalend'] : 0);
+
+private void test
+
+
+reservationRequest ;
