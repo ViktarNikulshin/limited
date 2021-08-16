@@ -2,7 +2,6 @@ package com.beta.limited.controller;
 
 import com.beta.limited.entity.Address;
 import com.beta.limited.entity.Report;
-import com.beta.limited.servise.AddressService;
 import com.beta.limited.servise.ReportService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -24,6 +23,7 @@ public class ReportController {
     public String reportAll(Model model) {
         model.addAttribute("reports", reportService.findAll());
         model.addAttribute("sum", reportService.getSum());
+        model.addAttribute("link",reportService.getLink());
         return "reportall";
     }
 
@@ -39,11 +39,12 @@ public class ReportController {
     }
 
     @PostMapping("/reportsave")
-    public String updatePostData(@Valid Report report, Address address, Model model) {
+    public String updatePostData(@Valid Report report, Address address, Model model) throws Exception {
         report.setAddress(address);
         reportService.update(report, address);
         model.addAttribute("reports", reportService.findAll());
         model.addAttribute("sum", reportService.getSum());
+        model.addAttribute("link",reportService.getLink());
         return "reportall";
     }
 
@@ -61,6 +62,7 @@ public class ReportController {
         reportService.removeById(id);
         model.addAttribute("reports", reportService.findAll());
         model.addAttribute("sum", reportService.getSum());
+        model.addAttribute("link",reportService.getLink());
         return "reportall";
     }
 
@@ -72,5 +74,14 @@ public class ReportController {
         model.addAttribute("report", report);
         model.addAttribute("address", address);
         return "report";
+    }
+
+    @GetMapping("/report/delete-all")
+    public String deleteAllReport(Model model){
+        reportService.removeAll();
+        model.addAttribute("reports", reportService.findAll());
+        model.addAttribute("sum", reportService.getSum());
+        model.addAttribute("link",reportService.getLink());
+        return "reportall";
     }
 }

@@ -20,6 +20,5 @@ public class Report {
     @Column
     private String phoneNumber;
     @OneToOne(mappedBy = "report", cascade = CascadeType.ALL)
-    @PrimaryKeyJoinColumn
     private Address address;
 }

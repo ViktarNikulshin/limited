@@ -7,11 +7,16 @@
 <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
 <body>
 <br>
-<div class="container">
+<div class="container-md">
     <br/>
     <div class="row right">
-        <a href="/report">
-            <button type="button" class="btn btn-lg btn-primary">Создать</button>
+        <div class="col-8">
+            <a th:href="@{'/report'}">
+                <button type="button" class="btn btn-lg btn-primary">Создать</button>
+            </a>
+        </div>
+        <a th:href="@{'/report/delete-all'}">
+            <button type="button" class="btn btn-lg btn-warning">Удалить все</button>
         </a>
     </div>
     <br/>
@@ -20,8 +25,8 @@
             <table class="table table-bordered">
                 <thead>
                 <tr>
-                    <th> Телефон</th>
-                    <th> Адрес</th>
+                    <th> №</th>
+                    <th> Заказ</th>
                     <th> Цена</th>
                     <th> Номер телефона</th>
                     <th> Действие</th>
@@ -31,22 +36,22 @@
                 <tr th:if="${reports.empty}">
                     <td colspan="2"> Нет заказов</td>
                 </tr>
-                <tr th:each="report : ${reports}">
-                    <td hidden><input name="id" th:value="${report.getId()}"></td>
-                    <td hidden><input name="phoneNumber" th:value="${report.getPhoneNumber()}"></td>
-                    <td>
-                        <input readonly name="mobile" th:value="${report.getMobile()}"/>
+                <tr th:each="report, iter : ${reports}">
+                    <td><span th:text="${iter.count}"></span></td>
+                    <td class="p-3 mb-2 bg-success text-white" th:if="${report.address.pos != null}"
+                        style="font-size: small">
+                        <span th:text="*{report.order}"></span>
                     </td>
-                    <td style="font-size: small" th:object="${report.address}">
-                        <span th:text="*{city}"></span> ул.<span th:text="*{street}"></span>
-                        д.<span th:text="*{house}"></span> кор.<span th:text="*{building}"></span>
-                        кв.<span th:text="*{flat}"></span> под.<span th:text="*{entrance}"></span>
-                        эт.<span th:text="*{floor}"></span>
+                    <td class="p-3 mb-2 bg-danger text-white" th:if="${report.address.pos == null}"
+                        style="font-size: small">
+                        <span th:text="*{report.order}"></span>
                     </td>
                     <td><input type="text" style="width: 80px" name="prise" id="prise"
                                th:value="${report.getPrise()}"></td>
-                    <td><a th:href="'tel:'+${report.getPhoneNumber()}"><p th:text="${report.getPhoneNumber()}"></p>
-                    </a>
+                    <td>
+                        <a class="btn btn-info" th:href="'tel:'+${report.getPhoneNumber()}">
+                            <p th:text="${report.getPhoneNumber()}"></p>
+                        </a>
                     </td>
                     <td>
                         <div class="btn-group">
@@ -60,7 +65,7 @@
             </table>
         </div>
         <div class="col-7">
-            <a class="btn btn-outline-success" th:href="@{'/map'}">Карта</a>
+            <a class="btn btn-outline-success" th:href="${link}" target="_blank">Карта</a>
         </div>
         <div class="col-4">
             <input class="text " th:value="${sum}">

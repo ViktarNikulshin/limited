@@ -1,3 +1,6 @@
+server:
+  servlet:
+    context-path: /limitid
 
 
 spring:
@@ -12,7 +15,7 @@ spring:
   jpa:
     database: postgresql
     database-platform: org.hibernate.dialect.PostgreSQL10Dialect
-    show-sql: true
+    show-sql: false
 bot:
   name: VNikulshin_bot
   token: 1512700278:AAHworP0q1zZLRuh7VuiKtRhcqXnBsNWwXo

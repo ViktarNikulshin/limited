@@ -3,11 +3,10 @@ package com.beta.limited.servise;
 import com.beta.limited.entity.Address;
 import com.beta.limited.entity.Report;
 
-import javax.persistence.criteria.CriteriaBuilder;
 import java.util.List;
 
 public interface ReportService {
-    Integer createReport(Report report);
+    void createReport(Report report);
 
     Report getReportById(Integer id);
 
@@ -17,7 +16,12 @@ public interface ReportService {
 
     void removeAll();
 
-    void update(Report report, Address address);
+    void update(Report report, Address address) throws Exception;
 
-    Double getSum();
+    String getSum();
+
+    String getLink();
+
+    void messageToReport(String order) throws Exception;
+
 }

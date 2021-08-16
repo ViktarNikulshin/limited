@@ -12,9 +12,9 @@ public class Address {
     @Id
     @Column(name = "report_id")
     private Integer id;
-    @OneToOne
-    @MapsId
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "report_id")
+    @MapsId
     private Report report;
     @Column
     private String city;
@@ -30,5 +30,9 @@ public class Address {
     private Integer entrance;
     @Column
     private Integer floor;
+    @Column
+    private String pos;
+    @Column
+    private String fullAddress;
 
 }
