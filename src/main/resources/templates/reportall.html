@@ -5,7 +5,7 @@
     <title>All report</title>
 </head>
 <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
-<body>
+<body style="background-color: #4f5050">
 <br>
 <div class="container-md">
     <br/>
@@ -15,16 +15,19 @@
                 <button type="button" class="btn btn-lg btn-primary">Создать</button>
             </a>
         </div>
-        <a th:href="@{'/report/delete-all'}">
-            <button type="button" class="btn btn-lg btn-warning">Удалить все</button>
-        </a>
+        <div class="col-4">
+            <a th:href="@{'/report/delete-all'}">
+                <button type="button" class="btn btn-lg btn-warning">Удалить все</button>
+            </a>
+        </div>
+
     </div>
     <br/>
     <div class="row">
         <div class="col-md-12">
             <table class="table table-bordered">
                 <thead>
-                <tr>
+                <tr class="text-white">
                     <th> №</th>
                     <th> Заказ</th>
                     <th> Цена</th>
@@ -37,17 +40,14 @@
                     <td colspan="2"> Нет заказов</td>
                 </tr>
                 <tr th:each="report, iter : ${reports}">
-                    <td><span th:text="${iter.count}"></span></td>
-                    <td class="p-3 mb-2 bg-success text-white" th:if="${report.address.pos != null}"
-                        style="font-size: small">
+                    <td><span class="text-white" th:text="${iter.count}"></span></td>
+                    <td class="p-3 mb-2 bg-success text-white" th:if="${report.address.pos != null}">
                         <span th:text="*{report.order}"></span>
                     </td>
-                    <td class="p-3 mb-2 bg-danger text-white" th:if="${report.address.pos == null}"
-                        style="font-size: small">
+                    <td class="p-3 mb-2 bg-danger text-white" th:if="${report.address.pos == null}">
                         <span th:text="*{report.order}"></span>
                     </td>
-                    <td><input type="text" style="width: 80px" name="prise" id="prise"
-                               th:value="${report.getPrise()}"></td>
+                    <td><span class="text-white" th:text="*{report.prise}"></span></td>
                     <td>
                         <a class="btn btn-info" th:href="'tel:'+${report.getPhoneNumber()}">
                             <p th:text="${report.getPhoneNumber()}"></p>

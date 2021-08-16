@@ -10,7 +10,6 @@
 	</parent>
 	<groupId>com.beta</groupId>
 	<artifactId>limited</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
 	<packaging>war</packaging>
 	<name>limited</name>
 	<description>TexnoMir</description>
