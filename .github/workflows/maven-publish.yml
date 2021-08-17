@@ -24,8 +24,16 @@ jobs:
         server-id: github # Value of the distributionManagement/repository/id field of the pom.xml
         settings-path: ${{ github.workspace }} # location for the settings.xml file
 
-#    - name: Build with Gradle
-#      run: gradle build
+    - name: Build with Maven
+      run: mvn -B package --file pom.xml
+
+    - name: View main dir
+      run: ls -a
+
+    - name: View target dir
+      run: |
+        cd target
+        ls -a
 #
 #    # The USERNAME and TOKEN need to correspond to the credentials environment variables used in
 #    # the publishing section of your build.gradle
