@@ -69,6 +69,7 @@
 	</dependencies>
 
 	<build>
+		<finalName>limited</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
