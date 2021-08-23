@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -32,6 +33,7 @@ public class ReportServiceImpl implements ReportService {
     public List<Report> findAll() {
         List<Report> reports = new ArrayList<>();
         reportRepository.findAll().forEach(reports::add);
+        reports = reports.stream().sorted(Comparator.comparing(Report::getExecuted)).collect(Collectors.toList());
         return reports;
     }
 
@@ -49,6 +51,9 @@ public class ReportServiceImpl implements ReportService {
     @Transactional
     public void update(Report report, Address address) throws Exception {
         address.setReport(report);
+        if(report.getExecuted() == null){
+            report.setExecuted(false);
+        }
         report.setAddress(addressService.findAddressToReport(address.getFullAddress(), address));
         reportRepository.save(report);
     }
@@ -64,8 +69,13 @@ public class ReportServiceImpl implements ReportService {
     }
 
     @Override
-    public String getLink() {
-        StringBuilder baseUrl = new StringBuilder("http://gov.swizz.ru/route/%7B%22start%22:%5B53.934721,27.427883%5D,%22end%22:%5B53.940547,27.605534%5D,%22points%22:%5B");
+    public String getLink(Integer id) {
+        StringBuilder baseUrl;
+        if(id == 2){
+             baseUrl = new StringBuilder("http://gov.swizz.ru/route/%7B%22start%22:%5B53.934721,27.427883%5D,%22end%22:%5B53.863038,27.460853%5D,%22points%22:%5B");
+        }else {
+             baseUrl = new StringBuilder("http://gov.swizz.ru/route/%7B%22start%22:%5B53.934721,27.427883%5D,%22end%22:%5B53.940547,27.605534%5D,%22points%22:%5B");
+        }
         List<Report> reports = Lists.newArrayList(reportRepository.findAll());
         List<Report> notNullPoint = reports.stream().filter(r -> r.getAddress().getPos() != null).collect(Collectors.toList());
         for (Report report : notNullPoint){
@@ -86,6 +96,7 @@ public class ReportServiceImpl implements ReportService {
         report.setPhoneNumber(getPhone(order));
         report.setAddress(addressService.findAddressToReport(order, new Address()));
         report.setPrise(getPrice(order));
+        report.setExecuted(false);
         createReport(report);
     }
 

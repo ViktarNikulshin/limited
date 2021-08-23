@@ -23,7 +23,6 @@ public class ReportController {
     public String reportAll(Model model) {
         model.addAttribute("reports", reportService.findAll());
         model.addAttribute("sum", reportService.getSum());
-        model.addAttribute("link",reportService.getLink());
         return "reportall";
     }
 
@@ -44,7 +43,6 @@ public class ReportController {
         reportService.update(report, address);
         model.addAttribute("reports", reportService.findAll());
         model.addAttribute("sum", reportService.getSum());
-        model.addAttribute("link",reportService.getLink());
         return "reportall";
     }
 
@@ -57,12 +55,21 @@ public class ReportController {
         return "report";
     }
 
+    @GetMapping("/update/{id}")
+    public String updateStatusReport(@PathVariable(value = "id", required = false) Integer id, Model model) throws Exception {
+        Report report = reportService.getReportById(id);
+        report.setExecuted(!report.getExecuted());
+        reportService.update(report, report.getAddress());
+        model.addAttribute("reports", reportService.findAll());
+        model.addAttribute("sum", reportService.getSum());
+        return "reportall";
+    }
+
     @GetMapping("/report/delete/{id}")
     public String deleteReport(@PathVariable("id") Integer id, Model model) {
         reportService.removeById(id);
         model.addAttribute("reports", reportService.findAll());
         model.addAttribute("sum", reportService.getSum());
-        model.addAttribute("link",reportService.getLink());
         return "reportall";
     }
 
@@ -81,7 +88,12 @@ public class ReportController {
         reportService.removeAll();
         model.addAttribute("reports", reportService.findAll());
         model.addAttribute("sum", reportService.getSum());
-        model.addAttribute("link",reportService.getLink());
         return "reportall";
+    }
+
+    @GetMapping("/map/{id}")
+    public String map(@PathVariable("id") Integer id, Model model){
+        model.addAttribute("link",reportService.getLink(id));
+        return "map";
     }
 }

@@ -19,6 +19,8 @@ public class Report {
     private String order;
     @Column
     private String phoneNumber;
+    @Column
+    private Boolean executed;
     @OneToOne(mappedBy = "report", cascade = CascadeType.ALL)
     private Address address;
 }

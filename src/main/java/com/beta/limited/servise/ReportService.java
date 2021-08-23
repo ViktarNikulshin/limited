@@ -20,7 +20,7 @@ public interface ReportService {
 
     String getSum();
 
-    String getLink();
+    String getLink(Integer id);
 
     void messageToReport(String order) throws Exception;
 

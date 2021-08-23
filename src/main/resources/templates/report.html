@@ -6,64 +6,45 @@
 </head>
 <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
 <link th:href="@{/css/main.css}" rel="stylesheet">
-<script src="https://api-maps.yandex.ru/2.1/?lang=ru_RU&amp;apikey=973829b4-a3c6-4e90-9108-34f5e90828d2" type="text/javascript"></script>
+<script src="https://api-maps.yandex.ru/2.1/?lang=ru_RU&amp;apikey=973829b4-a3c6-4e90-9108-34f5e90828d2"
+        type="text/javascript"></script>
 <script th:src="@{/js/search.js}"></script>
 
 <body style="background-color: #4f5050">
 <div class="container-lg">
     <br>
     <form th:action="@{'/reportsave'}" method="post">
-        <div class="form-group text-white">
-            <div class="mb-3 row">
-                <label class="col-sm-2 col-form-label">ID</label>
-                <div class="col-sm-10">
-                    <input type="text" readonly class="form-control-plaintext" th:field="*{report.id}">
-                </div>
-            </div>
-
-            <div class="mb-3 row">
-                <label class="col-sm-2 col-form-label">Цена</label>
-                <div class="col-10">
-                    <input type="number" class="form-control" name="prise" th:value="${report.prise}">
-                </div>
-            </div>
-            <div class="mb-3 row">
-                <label class="col-sm-2 col-form-label">Адрес</label>
-                <div class="col-10">
-                    <div class="form-row">
-                        <div class="col-9">
-                            <input type="text" class="form-control" id="address" placeholder="Адрес"
-                                   th:field="*{address.fullAddress}">
-                        </div>
-                    </div>
-                    <br/>
-                    <div class="row">
-                        <div class="col-3">
-                            <input type="text" class="form-control" placeholder="Кв" th:field="${address.flat}">
-                        </div>
-                        <div class="col-3">
-                            <input type="text" class="form-control" placeholder="Подъез" th:field="${address.entrance}">
-                        </div>
-                        <div class="col-3">
-                            <input type="text" class="form-control" placeholder="Этаж" th:field="${address.floor}">
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="mb-3 row">
-                <label class="col-sm-2 col-form-label">Телефон</label>
-                <div class="col-sm-10">
-                    <input type="text" class="form-control" th:field="*{report.phoneNumber}">
-                </div>
-            </div>
-            <div class="mb-3 row">
-                <label class="col-sm-2 col-form-label">Заказ</label>
-                <div class="col-10">
-            <textarea class="form-control" th:field="*{report.order}"></textarea>
-                </div>
-            </div>
-            <br>
-            <button type="submit" class="btn btn-lg btn-success">Up</button>
+        <div class="form-floating mb-3 text-black-50">
+            <input type="number" class="form-control fs-4" id="id" name="id" th:value="${report.id}" readonly>
+            <label for="id">Id</label>
+        </div>
+        <div class="form-check form-switch">
+            <input class="form-check-input" type="checkbox" id="executed" name="executed" th:checked="${report.executed}" >
+            <label class="form-check-label" for="executed">
+                Статус заказа
+            </label>
+        </div>
+        <div class="form-floating mb-3 text-black-50">
+            <input type="number" class="form-control fs-4" id="floatingInput" name="prise" th:value="${report.prise}">
+            <label for="floatingInput">Цена</label>
+        </div>
+        <div class="form-floating mb-3 text-black-50">
+            <input type="text" class="form-control fs-4" id="address" placeholder="Адрес"
+                   th:field="*{address.fullAddress}">
+            <label for="address">Адрес</label>
+        </div>
+        <div class="form-floating mb-3 text-black-50">
+            <input type="text" class="form-control fs-4" id="phoneNumber" placeholder="Номер телефона"
+                   th:field="*{report.phoneNumber}">
+            <label for="phoneNumber">Телефон</label>
+        </div>
+        <div class="form-floating mb-3 text-black-50">
+            <textarea class="form-control fs-4" id="order" th:field="*{report.order}" style="height: 150px"></textarea>
+            <label for="order">Заказ</label>
+        </div>
+        <br>
+        <div class="d-grid gap-2">
+            <button type="submit" class="btn btn-primary">Up</button>
         </div>
     </form>
 </div>
