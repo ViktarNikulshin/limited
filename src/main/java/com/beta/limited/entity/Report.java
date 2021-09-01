@@ -1,5 +1,6 @@
 package com.beta.limited.entity;
 
+import com.fasterxml.jackson.databind.annotation.JsonAppend;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -21,6 +22,9 @@ public class Report {
     private String phoneNumber;
     @Column
     private Boolean executed;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "runner")
+    private User runner;
     @OneToOne(mappedBy = "report", cascade = CascadeType.ALL)
     private Address address;
 }

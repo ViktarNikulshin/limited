@@ -12,16 +12,20 @@ public interface ReportService {
 
     List<Report> findAll();
 
+    List<Report> findAllByRunner(String userName);
+
     void removeById(Integer id);
 
     void removeAll();
 
+    void removeAllByUser(String userName);
+
     void update(Report report, Address address) throws Exception;
 
-    String getSum();
+    String getSum(String login);
 
     String getLink(Integer id);
 
-    void messageToReport(String order) throws Exception;
+    void messageToReport(String order, String user) throws Exception;
 
 }

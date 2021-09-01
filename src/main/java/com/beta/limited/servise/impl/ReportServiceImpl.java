@@ -3,15 +3,18 @@ package com.beta.limited.servise.impl;
 import com.beta.limited.entity.Address;
 import com.beta.limited.entity.Reference;
 import com.beta.limited.entity.Report;
+import com.beta.limited.entity.User;
 import com.beta.limited.repository.ReportRepository;
 import com.beta.limited.servise.AddressService;
 import com.beta.limited.servise.ReferenceService;
 import com.beta.limited.servise.ReportService;
+import com.beta.limited.servise.UserService;
 import lombok.RequiredArgsConstructor;
 import org.glassfish.jersey.internal.guava.Lists;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.jws.soap.SOAPBinding;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -27,6 +30,7 @@ public class ReportServiceImpl implements ReportService {
     private final ReportRepository reportRepository;
     private final AddressService addressService;
     private final ReferenceService referenceService;
+    private final UserService userService;
 
     @Override
     @Transactional
@@ -34,6 +38,15 @@ public class ReportServiceImpl implements ReportService {
         List<Report> reports = new ArrayList<>();
         reportRepository.findAll().forEach(reports::add);
         reports = reports.stream().sorted(Comparator.comparing(Report::getExecuted)).collect(Collectors.toList());
+        return reports;
+    }
+
+    @Override
+    public List<Report> findAllByRunner(String userName) {
+        User user = userService.getUserByLogin(userName);
+        List<Report> reports = new ArrayList<>();
+        reportRepository.findAll().forEach(reports::add);
+        reports = reports.stream().filter(report -> report.getRunner() == user).collect(Collectors.toList());
         return reports;
     }
 
@@ -48,6 +61,17 @@ public class ReportServiceImpl implements ReportService {
     }
 
     @Override
+    public void removeAllByUser(String userName) {
+        User user = userService.getUserByLogin(userName);
+        List<Report> reports = new ArrayList<>();
+        reportRepository.findAll().forEach(reports::add);
+        reports = reports.stream().filter(report -> report.getRunner() == user).collect(Collectors.toList());
+        for (Report report : reports) {
+            reportRepository.delete(report);
+        }
+    }
+
+    @Override
     @Transactional
     public void update(Report report, Address address) throws Exception {
         address.setReport(report);
@@ -59,11 +83,12 @@ public class ReportServiceImpl implements ReportService {
     }
 
     @Override
-    public String getSum() {
+    public String getSum(String login) {
+        User user = userService.getUserByLogin(login);
         DecimalFormat df = new DecimalFormat("#.##");
         df.setRoundingMode(RoundingMode.CEILING);
         List<Report> reports = Lists.newArrayList(reportRepository.findAll());
-        Double sum =reports.stream().filter(r -> r.getPrise() != null).mapToDouble(r -> r.getPrise()).sum();
+        Double sum =reports.stream().filter(r -> r.getPrise() != null && r.getRunner() == user).mapToDouble(r -> r.getPrise()).sum();
         reports.stream().filter(r -> r.getPrise() != null).mapToDouble(r -> r.getPrise()).sum();
         return df.format(sum);
     }
@@ -90,13 +115,14 @@ public class ReportServiceImpl implements ReportService {
     }
 
     @Override
-    public void messageToReport(String order) throws Exception {
+    public void messageToReport(String order, String user) throws Exception {
         Report report = new Report();
         report.setOrder(order);
         report.setPhoneNumber(getPhone(order));
         report.setAddress(addressService.findAddressToReport(order, new Address()));
         report.setPrise(getPrice(order));
         report.setExecuted(false);
+        report.setRunner(getUserByTelegramName(user));
         createReport(report);
     }
 
@@ -123,6 +149,10 @@ public class ReportServiceImpl implements ReportService {
             }
         }
         return "не найден";
+    }
+
+    private User getUserByTelegramName(String name){
+        return userService.getUserByTelegramName(name);
     }
 
     @Override

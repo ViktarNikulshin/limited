@@ -14,12 +14,21 @@
 <div class="container-lg">
     <br>
     <form th:action="@{'/reportsave'}" method="post">
-        <div class="form-floating mb-3 text-black-50">
-            <input type="number" class="form-control fs-4" id="id" name="id" th:value="${report.id}" readonly>
-            <label for="id">Id</label>
+        <div class="row">
+            <div class="form-floating mb-3 text-black-50 col">
+                <input type="number" class="form-control fs-4" id="id" name="id" th:value="${report.id}" readonly>
+                <label for="id">Id</label>
+            </div>
+            <div class="form-floating mb-3 text-black-50 col">
+                <select class="form-select" th:field="*{user.login}" aria-label="Выбор курьера">
+                    <option value=""> -- </option>
+                    <option th:each="runner : ${users}" th:text="${runner.login}" th:value="${runner.login}"></option>
+                </select>
+            </div>
         </div>
         <div class="form-check form-switch">
-            <input class="form-check-input" type="checkbox" id="executed" name="executed" th:checked="${report.executed}" >
+            <input class="form-check-input" type="checkbox" id="executed" name="executed"
+                   th:checked="${report.executed}">
             <label class="form-check-label" for="executed">
                 Статус заказа
             </label>

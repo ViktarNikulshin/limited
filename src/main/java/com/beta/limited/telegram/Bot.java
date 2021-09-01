@@ -22,7 +22,8 @@ public class Bot extends TelegramLongPollingBot {
     @SneakyThrows
     @Override
     public void onUpdateReceived(Update update) {
-        service.messageToReport(update.getMessage().getText());
+        String user = update.getMessage().getFrom().getUserName();
+        service.messageToReport(update.getMessage().getText(), user);
     }
     @Override
     public String getBotToken() {
