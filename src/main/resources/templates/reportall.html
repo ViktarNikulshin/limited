@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml" lang="en">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <title>All report</title>
@@ -9,22 +9,22 @@
 <div class="container-lg">
     <br/>
     <div class="row right">
-        <div class="col-3">
-            <a th:href="@{'/report'}">
-                <button type="button" class="btn btn-lg btn-primary">Создать</button>
-            </a>
-        </div>
-        <div class="col-2 align-middle">
+        <a class="btn btn-lg btn-primary col-2" th:href="@{'/report'}" target="_blank">Создать</a>
+        <div class="col-1 align-middle">
             <span class="text-white fs-2" th:text="${sum}"></span>
         </div>
-        <div class="col-3">
-            <a th:href="@{'/report/delete-all'}">
-                <button type="button" class="btn btn-lg btn-warning">Удалить все</button>
-            </a>
-        </div>
-        <div class="col-4 position-relative">
+        <a class="btn btn-lg btn-warning col-3" th:href="@{'/report/delete-all'}"
+           sec:authorize="hasRole('ROLE_RUNNER')">Удалить все</a>
+        <div class="col-1"></div>
+        <a class="btn btn-lg btn-info col-1" th:href="@{'report/build-routing/1'}"
+           sec:authorize="hasRole('ROLE_RUNNER')">Влад</a>
+        <div class="col-1"></div>
+        <a class="btn btn-lg btn-info col-1" th:href="@{'report/build-routing/2'}"
+           sec:authorize="hasRole('ROLE_RUNNER')">Тимур</a>
+        <div class="col-2 position-relative">
             <form th:action="@{/logout}" method="post">
-                <input type="submit" class="btn btn-lg btn-info position-absolute top-50 end-0 translate-middle-y" value="выход"/>
+                <input type="submit" class="btn btn-lg btn-info position-absolute top-50 end-0 translate-middle-y"
+                       value="выход"/>
             </form>
         </div>
 
@@ -47,13 +47,13 @@
                     <td colspan="2"> Нет заказов</td>
                 </tr>
                 <tr th:each="report, iter : ${reports}">
-                    <td class="align-middle bg-primary" th:if="${report.executed}">
-                        <a class="btn text-white" th:href="@{'/update/'  + ${report.getId()}}">
+                    <td class="align-middle" th:if="${report.executed}">
+                        <a class="btn btn-info text-white" th:href="@{'/update/'  + ${report.getId()}}">
                             <p class="text-white" th:text="${iter.count}"></p>
                         </a>
                     </td>
                     <td class="align-middle" th:if="${!report.executed}">
-                        <a class="btn text-white" th:href="@{'/update/'  + ${report.getId()}}">
+                        <a class="btn btn-danger text-white" th:href="@{'/update/'  + ${report.getId()}}">
                             <p class="text-white" th:text="${iter.count}"></p>
                         </a>
                     </td>
@@ -67,7 +67,24 @@
                             <p th:text="${report.order}" style="margin-bottom: 0rem"></p>
                         </a>
                     </td>
-                    <td class="align-middle fs-4"><span class="text-white" th:text="*{report.prise}"></span></td>
+                    <td class="align-middle fs-4">
+                        <div class="align-middle">
+                            <span class="text-white" th:text="*{report.prise}"></span>
+                        </div>
+                        <div sec:authorize="hasRole('ROLE_MANAGER')" class="align-middle"
+                             th:if="${report.runner != null}">
+                            <span class="text-white" th:text="*{report.runner.name}"></span>
+                        </div>
+                        <div sec:authorize="hasRole('ROLE_RUNNER')" class="align-middle">
+                            <a th:if="${report.address.pos != null}" class="btn btn-link" style="color: yellow"
+                               th:href="@{'yandexnavi://build_route_on_map'(lat_to=${report.address.lat},lon_to=${report.address.lon})}">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+                                     class="bi bi-cursor" viewBox="0 0 16 16">
+                                    <path d="M14.082 2.182a.5.5 0 0 1 .103.557L8.528 15.467a.5.5 0 0 1-.917-.007L5.57 10.694.803 8.652a.5.5 0 0 1-.006-.916l12.728-5.657a.5.5 0 0 1 .556.103zM2.25 8.184l3.897 1.67a.5.5 0 0 1 .262.263l1.67 3.897L12.743 3.52 2.25 8.184z"/>
+                                </svg>
+                            </a>
+                        </div>
+                    </td>
                     <td class="align-middle">
                         <a class="btn btn-info" th:href="'tel:'+${report.getPhoneNumber()}">
                             <p th:text="${report.getPhoneNumber()}"></p>
@@ -81,10 +98,12 @@
                 </tbody>
             </table>
         </div>
-        <div class="row">
-            <a class="btn btn-primary col-5" th:href="@{'map/1'}" target="_blank">Тимур</a>
-            <span class="col-2"></span>
-            <a class="btn btn-primary col-5" th:href="@{'map/2'}" target="_blank">Влад</a>
+        <div sec:authorize="hasRole('ROLE_RUNNER')" class="row">
+            <a class="btn btn-lg btn-primary col-3" th:href="@{'map/1'}" target="_blank">Тимур</a>
+            <span class="col-1"></span>
+            <a class="btn btn-lg btn-primary col-3" th:href="@{'map/2'}" target="_blank">Влад</a>
+            <span class="col-1"></span>
+            <a class="btn btn-lg btn-primary col-3" th:href="@{'map/3'}" target="_blank">Яндекс</a>
         </div>
     </div>
     <br/>

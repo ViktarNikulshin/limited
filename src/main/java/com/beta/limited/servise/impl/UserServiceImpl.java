@@ -1,14 +1,15 @@
 package com.beta.limited.servise.impl;
 
 import com.beta.limited.entity.*;
+import com.beta.limited.model.UserDto;
 import com.beta.limited.repository.RoleRepository;
 import com.beta.limited.repository.UserRepository;
 import com.beta.limited.servise.UserService;
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import javax.jws.soap.SOAPBinding;
 import java.util.List;
 import java.util.stream.Collectors;
 

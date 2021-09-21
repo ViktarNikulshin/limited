@@ -1,10 +1,8 @@
-package com.beta.limited.entity;
+package com.beta.limited.model;
 
 import lombok.Builder;
 import lombok.Data;
 
-import javax.persistence.*;
-import java.util.List;
 
 
 @Data

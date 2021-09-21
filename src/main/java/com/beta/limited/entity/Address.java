@@ -33,6 +33,12 @@ public class Address {
     @Column
     private String pos;
     @Column
+    private String lat;
+    @Column
+    private String lon;
+    @Column
     private String fullAddress;
+    @Column
+    private Integer routing;
 
 }

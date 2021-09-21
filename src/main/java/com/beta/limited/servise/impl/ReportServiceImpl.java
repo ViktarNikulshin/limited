@@ -9,16 +9,15 @@ import com.beta.limited.servise.AddressService;
 import com.beta.limited.servise.ReferenceService;
 import com.beta.limited.servise.ReportService;
 import com.beta.limited.servise.UserService;
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
-import org.glassfish.jersey.internal.guava.Lists;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.jws.soap.SOAPBinding;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -34,20 +33,14 @@ public class ReportServiceImpl implements ReportService {
 
     @Override
     @Transactional
-    public List<Report> findAll() {
-        List<Report> reports = new ArrayList<>();
-        reportRepository.findAll().forEach(reports::add);
-        reports = reports.stream().sorted(Comparator.comparing(Report::getExecuted)).collect(Collectors.toList());
-        return reports;
+    public List<Report> findAllByDate() {
+        return new ArrayList<>(reportRepository.findAllByDeliveryDateEqualsOrderByExecuted(new Date()));
     }
 
     @Override
     public List<Report> findAllByRunner(String userName) {
         User user = userService.getUserByLogin(userName);
-        List<Report> reports = new ArrayList<>();
-        reportRepository.findAll().forEach(reports::add);
-        reports = reports.stream().filter(report -> report.getRunner() == user).collect(Collectors.toList());
-        return reports;
+        return new ArrayList<>(reportRepository.findAllByRunnerAndDeliveryDateEqualsOrderByExecuted(user, new Date()));
     }
 
     @Override
@@ -61,24 +54,22 @@ public class ReportServiceImpl implements ReportService {
     }
 
     @Override
+    @Transactional
     public void removeAllByUser(String userName) {
         User user = userService.getUserByLogin(userName);
-        List<Report> reports = new ArrayList<>();
-        reportRepository.findAll().forEach(reports::add);
-        reports = reports.stream().filter(report -> report.getRunner() == user).collect(Collectors.toList());
-        for (Report report : reports) {
-            reportRepository.delete(report);
-        }
+        reportRepository.deleteAllByRunner(user);
     }
 
     @Override
     @Transactional
-    public void update(Report report, Address address) throws Exception {
+    public void update(Report report, Address address, Boolean isUpdateAddress) throws Exception {
         address.setReport(report);
         if(report.getExecuted() == null){
             report.setExecuted(false);
         }
-        report.setAddress(addressService.findAddressToReport(address.getFullAddress(), address));
+        if(isUpdateAddress){
+            report.setAddress(addressService.findAddressToReport(address.getFullAddress(), address));
+        }
         reportRepository.save(report);
     }
 
@@ -87,22 +78,34 @@ public class ReportServiceImpl implements ReportService {
         User user = userService.getUserByLogin(login);
         DecimalFormat df = new DecimalFormat("#.##");
         df.setRoundingMode(RoundingMode.CEILING);
-        List<Report> reports = Lists.newArrayList(reportRepository.findAll());
-        Double sum =reports.stream().filter(r -> r.getPrise() != null && r.getRunner() == user).mapToDouble(r -> r.getPrise()).sum();
-        reports.stream().filter(r -> r.getPrise() != null).mapToDouble(r -> r.getPrise()).sum();
+        List<Report> reports = new ArrayList<>(reportRepository.findAllByRunnerAndDeliveryDateEqualsOrderByExecuted(user, new Date()));
+        Double sum =reports.stream().mapToDouble(Report::getPrise).sum();
         return df.format(sum);
     }
 
     @Override
-    public String getLink(Integer id) {
+    public String getLink(Integer id, User user) {
         StringBuilder baseUrl;
-        if(id == 2){
-             baseUrl = new StringBuilder("http://gov.swizz.ru/route/%7B%22start%22:%5B53.934721,27.427883%5D,%22end%22:%5B53.863038,27.460853%5D,%22points%22:%5B");
-        }else {
-             baseUrl = new StringBuilder("http://gov.swizz.ru/route/%7B%22start%22:%5B53.934721,27.427883%5D,%22end%22:%5B53.940547,27.605534%5D,%22points%22:%5B");
-        }
-        List<Report> reports = Lists.newArrayList(reportRepository.findAll());
+        List<Report> reports = new ArrayList<>(reportRepository.findAllByRunnerAndDeliveryDateEqualsOrderByExecuted(user, new Date()));
         List<Report> notNullPoint = reports.stream().filter(r -> r.getAddress().getPos() != null).collect(Collectors.toList());
+        String start = "53.934721%2C27.427892";
+        String end = "53.863038%2C27.460853";
+        if(id == 3 ){
+            baseUrl = new StringBuilder("https://yandex.by/maps/157/minsk/?ll=27.467099%2C53.922192&mode=routes&rtext="+ start);
+            for (Report report: notNullPoint){
+                baseUrl.append("~");
+                baseUrl.append(report.getAddress().getLat());
+                baseUrl.append("%2C");
+                baseUrl.append(report.getAddress().getLon());
+            }
+            baseUrl.append("&rtt=auto&z=12");
+            return baseUrl.toString();
+        }
+        if(id == 2){
+            baseUrl = new StringBuilder("http://gov.swizz.ru/route/%7B%22start%22:%5B53.934721,27.427883%5D,%22end%22:%5B53.863038,27.460853%5D,%22points%22:%5B");
+        }else {
+            baseUrl = new StringBuilder("http://gov.swizz.ru/route/%7B%22start%22:%5B53.934721,27.427883%5D,%22end%22:%5B53.940547,27.605534%5D,%22points%22:%5B");
+        }
         for (Report report : notNullPoint){
             baseUrl.append("%5B");
             baseUrl.append(report.getAddress().getPos());
@@ -110,7 +113,6 @@ public class ReportServiceImpl implements ReportService {
         }
         baseUrl.deleteCharAt(baseUrl.length()-1);
         baseUrl.append("%5D,%22method%22:%221%22,%22optimization%22:%223%22,%22center%22:%5B53.87957799997894,27.687190999999995%5D,%22zoom%22:12%7D");
-        System.out.println(baseUrl.toString());
         return baseUrl.toString();
     }
 
@@ -123,16 +125,16 @@ public class ReportServiceImpl implements ReportService {
         report.setPrise(getPrice(order));
         report.setExecuted(false);
         report.setRunner(getUserByTelegramName(user));
+        report.setDeliveryDate(new Date());
         createReport(report);
     }
 
     private String getPhone(String order) {
         if (order.contains("+375")) {
             int index = order.indexOf("+375");
-            StringBuilder phone = new StringBuilder(order.substring(index).
-                    replaceAll(" ","").
-                    replaceAll("-",""));
-            System.out.println("Phone :  " + phone.substring(0, 13));
+            StringBuilder phone = new StringBuilder(order.substring(index)
+                    .replaceAll("(\\D)", ""));
+            System.out.println("Phone :  " + phone.insert(0, "+").substring(0, 13));
             return phone.substring(0, 13);
         }
         List<String> codes = referenceService.getAllReferenceByType(4).stream().map(Reference::getName).collect(Collectors.toList());
@@ -140,10 +142,9 @@ public class ReportServiceImpl implements ReportService {
             if (order.contains(code)){
                 if(order.charAt(order.indexOf(code)-1) == ' '){
                     StringBuilder phone = new StringBuilder(order.substring(order.indexOf(code)).
-                            replaceFirst(code.substring(0,2),"+375").
-                            replaceAll(" ","").
-                            replaceAll("-", ""));
-                    return phone.substring(0, 13);
+                            replaceFirst(code.substring(0,2),"+375")
+                            .replaceAll("(\\D)", ""));
+                    return phone.insert(0, "+").substring(0, 13);
                 }
 
             }
@@ -170,13 +171,17 @@ public class ReportServiceImpl implements ReportService {
 
     private Double getPrice(String order){
         Double price = 0.0;
-        if(order.contains("оплач") || order.contains("pay")) return price;
+        if(order.contains("оплач") || order.contains("pay") || order.contains("Оплач")) return price;
         Pattern p = Pattern.compile("([0-9]+([,][0-9]*)?|[,][0-9]+)");
         Matcher m = p.matcher(order);
         int i = 0;
         while (m.find(i)) {
             int j = m.end();
-            if(order.startsWith(" р ", j) || order.startsWith(" р.", j) || order.startsWith("р ",j)){
+            if(order.startsWith(" р ", j) ||
+                    order.startsWith(" р.", j) ||
+                    order.startsWith("р ",j) ||
+                    order.startsWith("p.",j) ||
+                    order.startsWith("p\n",j)){
                 price += Double.parseDouble(m.group().replace(',','.'));
             }
             i = m.end();

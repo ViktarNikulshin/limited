@@ -32,6 +32,7 @@
             <label class="form-check-label" for="executed">
                 Статус заказа
             </label>
+            <input type="number" class="form-control fs-4" id="routing" name="routing" th:value="${address.routing}" readonly>
         </div>
         <div class="form-floating mb-3 text-black-50">
             <input type="number" class="form-control fs-4" id="floatingInput" name="prise" th:value="${report.prise}">
@@ -51,9 +52,14 @@
             <textarea class="form-control fs-4" id="order" th:field="*{report.order}" style="height: 150px"></textarea>
             <label for="order">Заказ</label>
         </div>
+        <div class="form-floating mb-3 text-black-50">
+            <input type="date" class="form-control fs-4" id="deliveryDate" name="deliveryDate" placeholder="Дата доствки"
+                   th:field="*{report.deliveryDate}">
+            <label for="deliveryDate">Дата доставки</label>
+        </div>
         <br>
         <div class="d-grid gap-2">
-            <button type="submit" class="btn btn-primary">Up</button>
+            <button type="submit" class="btn btn-lg btn-primary">Сохранить</button>
         </div>
     </form>
 </div>

@@ -2,8 +2,10 @@ package com.beta.limited.entity;
 
 import com.fasterxml.jackson.databind.annotation.JsonAppend;
 import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Data
 @Entity
@@ -22,6 +24,9 @@ public class Report {
     private String phoneNumber;
     @Column
     private Boolean executed;
+    @Column
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private Date deliveryDate;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "runner")
     private User runner;

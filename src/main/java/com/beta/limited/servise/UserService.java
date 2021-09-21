@@ -1,9 +1,8 @@
 package com.beta.limited.servise;
 
 import com.beta.limited.entity.User;
-import com.beta.limited.entity.UserDto;
+import com.beta.limited.model.UserDto;
 
-import javax.jws.soap.SOAPBinding;
 import java.util.List;
 
 public interface UserService {

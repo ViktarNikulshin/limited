@@ -1,10 +1,18 @@
 package com.beta.limited.servise.impl;
 
+import com.beta.limited.controller.api.Geo;
 import com.beta.limited.entity.Address;
 import com.beta.limited.entity.Reference;
+import com.beta.limited.model.response.Activity;
+import com.beta.limited.model.routing.Objective;
+import com.beta.limited.model.routing.Root;
+import com.beta.limited.model.routing.ServicePoints;
+import com.beta.limited.model.routing.Vehicle;
+import com.beta.limited.repository.AddressRepository;
 import com.beta.limited.servise.AddressService;
 import com.beta.limited.servise.ReferenceService;
 import lombok.RequiredArgsConstructor;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.stereotype.Service;
@@ -15,8 +23,10 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -24,7 +34,12 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class AddressServiceImpl implements AddressService {
+
+
+    public static final String KEY = "585f856c-dffb-48f3-b5b2-16c2775ed625";
     private final ReferenceService referenceService;
+    private final AddressRepository addressRepository;
+    private final Geo geo;
 
 
     @Override
@@ -39,16 +54,18 @@ public class AddressServiceImpl implements AddressService {
                 builder.delete(0, i);
                 builder = new StringBuilder(builder.toString().trim());
                 if (address.getFullAddress() == null) {
-                    Pattern p = Pattern.compile("(\\d+)");
-                    Matcher m = p.matcher(builder.toString());
-                    if (m.find()) {
-                        int j = builder.toString().indexOf(m.group(0));
-                        address.setHouse(Integer.parseInt(m.group(0)));
-                        if(builder.toString().contains("д.")){
-                            address.setStreet(builder.toString().substring(0, j - 3));
-                        }else {
-                            address.setStreet(builder.toString().substring(0, j -1));
-                        }
+                    Integer house = findFirstNumber(builder.toString());
+                    int j = builder.indexOf(house.toString());
+                    if (j <= 7) {
+                        String street = builder.toString().substring(j + house.toString().length());
+                        house = findFirstNumber(street);
+                        j = builder.indexOf(house.toString());
+                    }
+                    address.setHouse(house);
+                    if (builder.toString().contains("д.")) {
+                        address.setStreet(builder.toString().substring(0, j - 3));
+                    } else {
+                        address.setStreet(builder.toString().substring(0, j - 1));
                     }
                 } else {
                     List<String> typeStreet = referenceService.getAllReferenceByType(2).stream().map(Reference::getName).collect(Collectors.toList());
@@ -120,11 +137,144 @@ public class AddressServiceImpl implements AddressService {
             String pos = point.getString("pos");
             List<String> listPoint = Arrays.asList(pos.split(" "));
             address.setPos(listPoint.get(1) + "," + listPoint.get(0));
+            address.setLat(listPoint.get(1));
+            address.setLon(listPoint.get(0));
             return address;// итоговая широта и долгота
         } catch (JSONException e) {
             System.err.println(e);
             return address;
         }
+    }
+
+    @Override
+    public void buildRouting(List<Address> addresses) throws IOException {
+        URL baseUrl = new URL("https://graphhopper.com/api/1/matrix");
+        String apiKey = "585f856c-dffb-48f3-b5b2-16c2775ed625";
+        StringBuilder query = new StringBuilder("point=53.93450,27.42758");
+        for (Address address : addresses) {
+            query.append("&");
+            query.append("point=" + address.getPos());
+        }
+        URL url = new URL(baseUrl + "?" + query + "&type=json&vehicle=car&debug=true&out_array=distances&key=" + apiKey);
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestMethod("GET");
+        connection.setRequestProperty("User-Agent", "PostmanRuntime/7.28.2");
+        BufferedReader in = new BufferedReader(
+                new InputStreamReader(connection.getInputStream()));
+        String inputLine;
+        StringBuffer resp = new StringBuffer();
+
+        while ((inputLine = in.readLine()) != null) {
+            resp.append(inputLine);
+        }
+        in.close();
+        try {
+            JSONObject response = new JSONObject(resp.toString());
+            JSONArray matrix = response.getJSONArray("distances");
+            List<Object> list = matrix.toList();
+            int i = 0;
+            for (Object item : list) {
+                List<Integer> nullValue = (List) item;
+                nullValue.set(i, 0);
+            }
+            List<Integer> distentions = (List) list.get(i);
+            Optional<Integer> min = distentions.stream().filter(d -> d != 0).sorted().findFirst();
+            int j = distentions.indexOf(min.get());
+            Address address = addresses.get(j - 1);
+            address.setRouting(i);
+            addressRepository.save(address);
+            for (Object item : list) {
+                List<Integer> nullValue = (List) item;
+                nullValue.set(j, 0);
+            }
+
+            List<Integer> distentions1 = (List) list.get(j);
+            Optional<Integer> min1 = distentions1.stream().filter(d -> d != 0).sorted().findFirst();
+            int j1 = distentions1.indexOf(min1.get());
+            Address address1 = addresses.get(j1 - 1);
+            address1.setRouting(++i);
+            addressRepository.save(address1);
+            for (Object item : list) {
+                List<Integer> nullValue = (List) item;
+                nullValue.set(j1, 0);
+            }
+
+            List<Integer> distentions2 = (List) list.get(j1);
+            Optional<Integer> min2 = distentions2.stream().filter(d -> d != 0).sorted().findFirst();
+            int j2 = distentions2.indexOf(min2.get());
+            Address address2 = addresses.get(j2 - 1);
+            address1.setRouting(++i);
+            addressRepository.save(address2);
+            for (Object item : list) {
+                List<Integer> nullValue = (List) item;
+                nullValue.set(j2, 0);
+            }
+        } catch (JSONException e) {
+            System.err.println(e);
+        }
+    }
+
+    @Override
+    public void findOptimalRouting(List<Address> addresses, Integer id) {
+        Root root = new Root();
+        com.beta.limited.model.routing.Address startAddress = com.beta.limited.model.routing.Address.builder()
+                .location_id("start")
+                .lat(53.93450)
+                .lon(27.42758)
+                .build();
+        com.beta.limited.model.routing.Address endAddress = com.beta.limited.model.routing.Address.builder()
+                .location_id("end")
+                .lon(27.460853)
+                .lat(53.863038)
+                .build();
+        List<Vehicle> vehicles = new ArrayList<>();
+        Vehicle vehicleStart = new Vehicle();
+        vehicleStart.setVehicle_id("start");
+        vehicleStart.setStart_address(startAddress);
+        vehicleStart.setMax_jobs(15);
+        vehicles.add(vehicleStart);
+        Vehicle vehicleEnd = new Vehicle();
+        vehicleEnd.setVehicle_id("end");
+        vehicleEnd.setEnd_address(endAddress);
+        vehicleEnd.setMax_jobs(15);
+        vehicles.add(vehicleEnd);
+        root.setVehicles(vehicles);
+        List<ServicePoints> points = new ArrayList<>();
+        addresses.forEach(a -> {
+            points.add(ServicePoints.builder()
+                    .id(a.getId().toString())
+                    .name(a.getPos())
+                    .address(com.beta.limited.model.routing.Address.builder()
+                            .location_id(a.getId().toString())
+                            .lat(Double.parseDouble(a.getLat()))
+                            .lon(Double.parseDouble(a.getLon()))
+                            .build())
+                    .build());
+        });
+        root.setServicePoints(points);
+        List<Objective> objectives = new ArrayList<>();
+        objectives.add(Objective.builder()
+                .type("min")
+                .value("vehicles")
+                .build());
+        objectives.add(Objective.builder()
+                .type("min")
+                .value("completion_time")
+                .build());
+        root.setObjectives(objectives);
+        int i = 1;
+        com.beta.limited.model.response.Root response = geo.getRout(KEY, root);
+        for (Activity activity : response.getSolution().getRoutes().get(0).getActivities()) {
+            if (activity.getType().equals("start") || activity.getType().equals("end")) {
+
+            } else {
+                Address address = addressRepository.findById(Integer.parseInt(activity.getLocation_id())).orElse(null);
+                address.setRouting(i);
+                addressRepository.save(address);
+                i++;
+            }
+        }
+        System.out.println(response);
     }
 
     public Address seFlat(String order, Address address) {
