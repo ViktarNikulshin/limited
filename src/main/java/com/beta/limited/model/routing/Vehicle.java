@@ -9,7 +9,6 @@ public class Vehicle{
     @JsonIgnore
     public String type_id;
     public Address start_address;
-    @JsonIgnore
     public Address end_address;
     @JsonIgnore
     public int earliest_start;

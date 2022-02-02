@@ -12,6 +12,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -41,13 +42,10 @@ public class ReportController {
     @GetMapping("/map")
     public String map(Model model, HttpServletRequest httpServletRequest) {
         List<String> points;
-        String name = httpServletRequest.getUserPrincipal().getName();
-        points = reportService.findAllByRunner(name).stream().map(report -> '"' +
-                report.getAddress().getCity() + " " + report.getAddress().getStreet() + " " +
-                report.getAddress().getHouse() + " " +
-                report.getAddress().getBuilding() + '"').collect(Collectors.toList());
+        points = reportService.findAllByDate().stream().map(report -> report.getAddress().getLat()
+                + " " + report.getAddress().getLon()).collect(Collectors.toList());
         model.addAttribute("points", points);
-        return "map";
+        return "yandex-map";
     }
 
     @PostMapping("/reportsave")
@@ -124,10 +122,25 @@ public class ReportController {
     }
 
     @GetMapping("report/build-routing/{id}")
-    public String buildRouting(@PathVariable("id") Integer id, HttpServletRequest httpServletRequest) throws IOException {
+    public String buildRouting(@PathVariable("id") Integer id, HttpServletRequest httpServletRequest){
         String name = httpServletRequest.getUserPrincipal().getName();
         List<Address> addresses = reportService.findAllByRunner(name).stream().map(Report::getAddress).collect(Collectors.toList());
         addressService.findOptimalRouting(addresses, id);
+        return "redirect:/reportall";
+    }
+
+    @PostMapping("report/update-all")
+    public String buildRouting(@Valid List<Report> reports, HttpServletRequest httpServletRequest){
+        String name = httpServletRequest.getUserPrincipal().getName();
+        List<Address> addresses = reportService.findAllByRunner(name).stream().map(Report::getAddress).collect(Collectors.toList());
+
+        return "redirect:/reportall";
+    }
+
+    @GetMapping("modals/modal2")
+    public String modal2(@RequestParam("name") String name, @RequestParam("id") Long id, HttpServletRequest httpServletRequest) {
+
+        System.out.println("number = " + name);
         return "redirect:/reportall";
     }
 }

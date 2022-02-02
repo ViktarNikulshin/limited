@@ -2,7 +2,6 @@ package com.beta.limited.model.routing;
 
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 
 @Data

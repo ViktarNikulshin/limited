@@ -89,14 +89,21 @@ public class ReportServiceImpl implements ReportService {
         List<Report> reports = new ArrayList<>(reportRepository.findAllByRunnerAndDeliveryDateEqualsOrderByExecuted(user, new Date()));
         List<Report> notNullPoint = reports.stream().filter(r -> r.getAddress().getPos() != null).collect(Collectors.toList());
         String start = "53.934721%2C27.427892";
-        String end = "53.863038%2C27.460853";
-        if(id == 3 ){
+        String endV = "53.863038%2C27.460853";
+        String endT = "53.940547%2C27.605534";
+        if(id == 3 || id == 4){
             baseUrl = new StringBuilder("https://yandex.by/maps/157/minsk/?ll=27.467099%2C53.922192&mode=routes&rtext="+ start);
             for (Report report: notNullPoint){
                 baseUrl.append("~");
                 baseUrl.append(report.getAddress().getLat());
                 baseUrl.append("%2C");
                 baseUrl.append(report.getAddress().getLon());
+            }
+            if(id ==3){
+                baseUrl.append("~").append(endV);
+            }
+            if(id == 4){
+                baseUrl.append("~").append(endT);
             }
             baseUrl.append("&rtt=auto&z=12");
             return baseUrl.toString();

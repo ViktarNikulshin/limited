@@ -1,73 +1,50 @@
-def planVacancyInfo
-def currentRequest
-//Проверка при увеличении оклада или уменьшения даты выхода
-//if(planVacancyInfo.properties["salary"] < Double.parseDouble(currentRequest.properties['salary'][0].value)){
-//    System.out.println("salary more  plan");
-//    return true;
-//} else{
-//    System.out.println("salary not more plan");
-//};
-//
-//if(planVacancyInfo.properties["workDate"] > currentRequest.properties['workDate']){
-//    System.out.println("Start date not more plan");
-//    return true;
-//}else {
-//    System.out.println("Start date not more current");
-//};
-//return false;
-def calPlan = Calendar.getInstance()
-def calCurrency = Calendar.getInstance()
-int region = currentRequest.properties['region'][0].value.toInteger()
-calPlan.setTime(planVacancyInfo.properties["workDate"])
-calCurrency.setTime(currentRequest.properties['workDate'])
+// проверка необходимости отправки заявки на утверждение руководителю
+def needConfirmation = false;
 
-if(planVacancyInfo.properties["salary"] != Double.parseDouble(currentRequest.properties['salary'][0].value)){
-    System.out.println("not = salary");
-    return true;
+if (requestApprovedByHead.properties['salary'][0].value != currentRequest.properties['salary'][0].value) {
+   return true;
 }
-if(calPlan.get(Calendar.YEAR) != calCurrency.get(Calendar.YEAR)
-        && calPlan.get(Calendar.DAY_OF_YEAR) != calCurrency.get(Calendar.DAY_OF_YEAR)){
-    System.out.println("not = date");
-    return true;
-}
-if(planVacancyInfo.properties["comment"] != currentRequest.properties['positionComment']){
-    System.out.println("not = comment");
-    return true;
-}
-if(planVacancyInfo.properties["positionName"] != currentRequest.properties['plannedVacancy'][0].name){
-    System.out.println("not = position");
-    return true;
-}
-if(planVacancyInfo.properties["region"] != region){
-    System.out.println("not = region");
-    return true;
-}
-return false;
 
-System.out.println("position plan= " + planVacancyInfo.properties["positionName"]);
-System.out.println("position currency= " + currentRequest.properties["plannedVacancy"][0].name);
-System.out.println("Plan date = " + planVacancyInfo.properties["workDate"]);
-System.out.println("Plan date type = " + planVacancyInfo.properties["workDate"].getClass());
-System.out.println("currency work date  Timestamp = " + currentRequest.properties['workDate']);
-def currencyDate = new Date(currentRequest.properties['workDate'].getTime())
-def calPlan = Calendar.getInstance()
-def calCurrency = Calendar.getInstance()
-int region = currentRequest.properties['region'][0].value.toInteger()
-calPlan.setTime(planVacancyInfo.properties["workDate"])
-calCurrency.setTime(currentRequest.properties['workDate'])
-if(calPlan.get(Calendar.YEAR) == calCurrency.get(Calendar.YEAR)
-        && calPlan.get(Calendar.DAY_OF_YEAR) == calCurrency.get(Calendar.DAY_OF_YEAR)){
-    System.out.println("plan date = currency date")
-} else {
-    System.out.println("plan date != currency date")
+if (requestApprovedByHead.properties['minessp'].id != currentRequest.properties['minessp'].id) {
+   return true;
 }
-System.out.println("currency work date  Date = " + currencyDate);
-System.out.println("currency work date type = " + currentRequest.properties['workDate'].getClass());
-System.out.println("Plan salary = " + planVacancyInfo.properties["salary"]);
-System.out.println("currency salary  = " + currentRequest.properties['salary'][0].value);
-System.out.println("Plan comment  = " + planVacancyInfo.properties['comment']);
-System.out.println("currency comment  = " + currentRequest.properties['positionComment']);
-System.out.println("Plan region  = " + planVacancyInfo.properties['region']);
-System.out.println("Plan region type = " + planVacancyInfo.properties['region'].getClass());
-System.out.println("currency region  = " + region);
-System.out.println("currency region  type = " + currentRequest.properties['region'][0].value.getClass());
+
+if (requestApprovedByHead.properties['applicantPosition'] && !currentRequest.properties['applicantPosition']) {
+   return true;
+} else if (!requestApprovedByHead.properties['applicantPosition'] && currentRequest.properties['applicantPosition']) {
+   return true;
+}  else if (requestApprovedByHead.properties['applicantPosition'] && currentRequest.properties['applicantPosition']) {
+   if (requestApprovedByHead.properties['applicantPosition'][0].value != currentRequest.properties['applicantPosition'][0].value) {
+     return true;
+   }
+}
+
+if (requestApprovedByHead.properties['openReason'][0].value != currentRequest.properties['openReason'][0].value) {
+  return true;
+}
+if (requestApprovedByHead.properties['openReason'][0].value == 'replace') {
+      if (requestApprovedByHead.properties['replacementReason'][0].value != currentRequest.properties['replacementReason'][0].value) {
+       return true;
+      }
+     if (requestApprovedByHead.properties['replacementName'][0].value != currentRequest.properties['replacementName'][0].value) {
+       return true;
+      }
+}
+if (requestApprovedByHead.properties['openReason'][0].value == 'parentalLeave') {
+       if (requestApprovedByHead.properties['replacementName'][0].value != currentRequest.properties['replacementName'][0].value) {
+        return true;
+      }
+}
+if (requestApprovedByHead.properties['openReason'][0].value == 'postReason2') {
+     if (requestApprovedByHead.properties['program'] != currentRequest.properties['program']) {
+        return true;
+      }
+       if (requestApprovedByHead.properties['project'] != currentRequest.properties['project']) {
+        return true;
+      }
+}
+if (requestApprovedByHead.properties['PersNadbavka'] != currentRequest.properties['PersNadbavka']) {
+    return true;
+}
+
+return needConfirmation;

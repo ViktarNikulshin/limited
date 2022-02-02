@@ -3,6 +3,7 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <title>All report</title>
+
 </head>
 <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
 <body style="background-color: #4f5050">
@@ -11,16 +12,19 @@
     <div class="row right">
         <a class="btn btn-lg btn-primary col-2" th:href="@{'/report'}" target="_blank">Создать</a>
         <div class="col-1 align-middle">
-            <span class="text-white fs-2" th:text="${sum}"></span>
+            <span class="text-white fs-4" th:text="${sum}"></span>
         </div>
         <a class="btn btn-lg btn-warning col-3" th:href="@{'/report/delete-all'}"
            sec:authorize="hasRole('ROLE_RUNNER')">Удалить все</a>
         <div class="col-1"></div>
         <a class="btn btn-lg btn-info col-1" th:href="@{'report/build-routing/1'}"
            sec:authorize="hasRole('ROLE_RUNNER')">Влад</a>
-        <div class="col-1"></div>
-        <a class="btn btn-lg btn-info col-1" th:href="@{'report/build-routing/2'}"
-           sec:authorize="hasRole('ROLE_RUNNER')">Тимур</a>
+        <div class="col-2 position-relative">
+            <form th:action="@{'report/update-all'}" method="post">
+                <input type="submit" class="btn btn-lg btn-info position-absolute top-50 end-0 translate-middle-y"
+                       value="обновить"/>
+            </form>
+        </div>
         <div class="col-2 position-relative">
             <form th:action="@{/logout}" method="post">
                 <input type="submit" class="btn btn-lg btn-info position-absolute top-50 end-0 translate-middle-y"
@@ -44,7 +48,7 @@
                 </thead>
                 <tbody>
                 <tr th:if="${reports.empty}">
-                    <td colspan="2"> Нет заказов</td>
+                    <td colspan="5"> Нет заказов</td>
                 </tr>
                 <tr th:each="report, iter : ${reports}">
                     <td class="align-middle" th:if="${report.executed}">
@@ -97,13 +101,19 @@
                 </tr>
                 </tbody>
             </table>
+
         </div>
         <div sec:authorize="hasRole('ROLE_RUNNER')" class="row">
-            <a class="btn btn-lg btn-primary col-3" th:href="@{'map/1'}" target="_blank">Тимур</a>
+            <a class="btn btn-lg btn-primary col-2" th:href="@{'map/1'}" target="_blank">Тимур</a>
             <span class="col-1"></span>
-            <a class="btn btn-lg btn-primary col-3" th:href="@{'map/2'}" target="_blank">Влад</a>
+            <a class="btn btn-lg btn-primary col-2" th:href="@{'map/2'}" target="_blank">Влад</a>
+            <span class="col-2"></span>
+            <a class="btn btn-lg btn-primary col-2" th:href="@{'map/4'}" target="_blank">Янд.Тимур</a>
             <span class="col-1"></span>
-            <a class="btn btn-lg btn-primary col-3" th:href="@{'map/3'}" target="_blank">Яндекс</a>
+            <a class="btn btn-lg btn-primary col-2" th:href="@{'map/3'}" target="_blank">Янд.Влад</a>
+        </div>
+        <div sec:authorize="hasRole('ROLE_MANAGER')">
+            <a class="btn btn-lg btn-primary col-2" th:href="@{'map'}" target="_blank">Карта</a>
         </div>
     </div>
     <br/>

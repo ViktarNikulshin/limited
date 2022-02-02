@@ -147,74 +147,6 @@ public class AddressServiceImpl implements AddressService {
     }
 
     @Override
-    public void buildRouting(List<Address> addresses) throws IOException {
-        URL baseUrl = new URL("https://graphhopper.com/api/1/matrix");
-        String apiKey = "585f856c-dffb-48f3-b5b2-16c2775ed625";
-        StringBuilder query = new StringBuilder("point=53.93450,27.42758");
-        for (Address address : addresses) {
-            query.append("&");
-            query.append("point=" + address.getPos());
-        }
-        URL url = new URL(baseUrl + "?" + query + "&type=json&vehicle=car&debug=true&out_array=distances&key=" + apiKey);
-        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-        connection.setRequestMethod("GET");
-        connection.setRequestProperty("User-Agent", "PostmanRuntime/7.28.2");
-        BufferedReader in = new BufferedReader(
-                new InputStreamReader(connection.getInputStream()));
-        String inputLine;
-        StringBuffer resp = new StringBuffer();
-
-        while ((inputLine = in.readLine()) != null) {
-            resp.append(inputLine);
-        }
-        in.close();
-        try {
-            JSONObject response = new JSONObject(resp.toString());
-            JSONArray matrix = response.getJSONArray("distances");
-            List<Object> list = matrix.toList();
-            int i = 0;
-            for (Object item : list) {
-                List<Integer> nullValue = (List) item;
-                nullValue.set(i, 0);
-            }
-            List<Integer> distentions = (List) list.get(i);
-            Optional<Integer> min = distentions.stream().filter(d -> d != 0).sorted().findFirst();
-            int j = distentions.indexOf(min.get());
-            Address address = addresses.get(j - 1);
-            address.setRouting(i);
-            addressRepository.save(address);
-            for (Object item : list) {
-                List<Integer> nullValue = (List) item;
-                nullValue.set(j, 0);
-            }
-
-            List<Integer> distentions1 = (List) list.get(j);
-            Optional<Integer> min1 = distentions1.stream().filter(d -> d != 0).sorted().findFirst();
-            int j1 = distentions1.indexOf(min1.get());
-            Address address1 = addresses.get(j1 - 1);
-            address1.setRouting(++i);
-            addressRepository.save(address1);
-            for (Object item : list) {
-                List<Integer> nullValue = (List) item;
-                nullValue.set(j1, 0);
-            }
-
-            List<Integer> distentions2 = (List) list.get(j1);
-            Optional<Integer> min2 = distentions2.stream().filter(d -> d != 0).sorted().findFirst();
-            int j2 = distentions2.indexOf(min2.get());
-            Address address2 = addresses.get(j2 - 1);
-            address1.setRouting(++i);
-            addressRepository.save(address2);
-            for (Object item : list) {
-                List<Integer> nullValue = (List) item;
-                nullValue.set(j2, 0);
-            }
-        } catch (JSONException e) {
-            System.err.println(e);
-        }
-    }
-
-    @Override
     public void findOptimalRouting(List<Address> addresses, Integer id) {
         Root root = new Root();
         com.beta.limited.model.routing.Address startAddress = com.beta.limited.model.routing.Address.builder()
@@ -222,22 +154,26 @@ public class AddressServiceImpl implements AddressService {
                 .lat(53.93450)
                 .lon(27.42758)
                 .build();
-        com.beta.limited.model.routing.Address endAddress = com.beta.limited.model.routing.Address.builder()
-                .location_id("end")
-                .lon(27.460853)
-                .lat(53.863038)
-                .build();
+        com.beta.limited.model.routing.Address endAddress;
+        if(id ==1) {
+            endAddress = com.beta.limited.model.routing.Address.builder()
+                    .location_id("end")
+                    .lon(27.460853)
+                    .lat(53.863038)
+                    .build();
+        }else {
+            endAddress = com.beta.limited.model.routing.Address.builder()
+                    .location_id("end")
+                    .lon(27.605534)
+                    .lat(53.940547)
+                    .build();
+        }
         List<Vehicle> vehicles = new ArrayList<>();
         Vehicle vehicleStart = new Vehicle();
         vehicleStart.setVehicle_id("start");
         vehicleStart.setStart_address(startAddress);
-        vehicleStart.setMax_jobs(15);
+        vehicleStart.setEnd_address(endAddress);
         vehicles.add(vehicleStart);
-        Vehicle vehicleEnd = new Vehicle();
-        vehicleEnd.setVehicle_id("end");
-        vehicleEnd.setEnd_address(endAddress);
-        vehicleEnd.setMax_jobs(15);
-        vehicles.add(vehicleEnd);
         root.setVehicles(vehicles);
         List<ServicePoints> points = new ArrayList<>();
         addresses.forEach(a -> {
@@ -274,7 +210,6 @@ public class AddressServiceImpl implements AddressService {
                 i++;
             }
         }
-        System.out.println(response);
     }
 
     public Address seFlat(String order, Address address) {
