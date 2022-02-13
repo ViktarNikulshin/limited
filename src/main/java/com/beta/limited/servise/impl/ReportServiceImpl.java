@@ -64,6 +64,7 @@ public class ReportServiceImpl implements ReportService {
     @Transactional
     public void update(Report report, Address address, Boolean isUpdateAddress) throws Exception {
         address.setReport(report);
+        report.setAddress(address);
         if(report.getExecuted() == null){
             report.setExecuted(false);
         }

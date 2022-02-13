@@ -9,10 +9,7 @@ import com.beta.limited.servise.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -83,6 +80,16 @@ public class ReportController {
         return "redirect:/reportall";
     }
 
+    @PostMapping("/update")
+    public String updateStatusReport(@Valid Report report, Address address, User user, HttpServletRequest httpServletRequest) throws Exception {
+        Report report1 = reportService.getReportById(report.getId());
+        report1.setExecuted(report.getExecuted());
+        Address address1 =addressService.findAddressById(address.getId());
+        address1.setRouting(address.getRouting());
+        reportService.update(report1, address1, false);
+        return "redirect:/reportall";
+    }
+
     @GetMapping("/report/delete/{id}")
     public String deleteReport(@PathVariable("id") Integer id, Model model, HttpServletRequest httpServletRequest) {
         reportService.removeById(id);
@@ -134,13 +141,6 @@ public class ReportController {
         String name = httpServletRequest.getUserPrincipal().getName();
         List<Address> addresses = reportService.findAllByRunner(name).stream().map(Report::getAddress).collect(Collectors.toList());
 
-        return "redirect:/reportall";
-    }
-
-    @GetMapping("modals/modal2")
-    public String modal2(@RequestParam("name") String name, @RequestParam("id") Long id, HttpServletRequest httpServletRequest) {
-
-        System.out.println("number = " + name);
         return "redirect:/reportall";
     }
 }

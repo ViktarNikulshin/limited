@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.beta</groupId>
-	<artifactId>limited</artifactId>
+	<artifactId>limitid</artifactId>
 	<packaging>war</packaging>
-	<name>limited</name>
+	<name>limitid</name>
 	<description>TexnoMir</description>
 	<properties>
 		<java.version>1.8</java.version>
@@ -109,7 +109,7 @@
 	</dependencyManagement>
 
 	<build>
-		<finalName>limited</finalName>
+		<finalName>limitid</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>

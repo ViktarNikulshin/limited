@@ -10,4 +10,6 @@ public interface AddressService {
     Address findAddressToReport(String s, Address address) throws Exception;
 
     void findOptimalRouting(List<Address> addresses, Integer id);
+
+    Address findAddressById(Integer id);
 }

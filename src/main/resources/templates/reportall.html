@@ -5,7 +5,37 @@
     <title>All report</title>
 
 </head>
-<link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
+<!-- JQuery -->
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>
+
+<!-- Bootstrap -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<link th:href="@{css/bootstrap.min.css}" rel="stylesheet">
+
+<!-- JQuery UI -->
+<link rel="stylesheet" href="//code.jquery.com/ui/1.9.2/themes/base/jquery-ui.css">
+<script src="https://code.jquery.com/ui/1.9.2/jquery-ui.js"></script>
+
+<!-- JQuery Mobile -->
+<!--<link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css">-->
+<!--<script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>-->
+<!--<script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>-->
+
+<script type="text/javascript">
+
+    function openReportModal(id){
+        $.ajax({
+            url: "/limitid/update-point/" + id,
+            success: function(data){
+                $("#reportModalHolder").html(data);
+                $('#reportModal').modal({
+                    backdrop: 'static'
+                });
+
+            }
+        });
+    }
+</script>
 <body style="background-color: #4f5050">
 <div class="container-lg">
     <br/>
@@ -52,12 +82,12 @@
                 </tr>
                 <tr th:each="report, iter : ${reports}">
                     <td class="align-middle" th:if="${report.executed}">
-                        <a class="btn btn-info text-white" th:href="@{'/update/'  + ${report.getId()}}">
+                        <a href="#" th:onclick="'javascript:openReportModal(\''+ ${report.id} + '\');'" class="btn btn-info btn-xs">
                             <p class="text-white" th:text="${iter.count}"></p>
                         </a>
                     </td>
                     <td class="align-middle" th:if="${!report.executed}">
-                        <a class="btn btn-danger text-white" th:href="@{'/update/'  + ${report.getId()}}">
+                        <a href="#" th:onclick="'javascript:openReportModal(\''+ ${report.id} + '\');'" class="btn btn-danger btn-xs">
                             <p class="text-white" th:text="${iter.count}"></p>
                         </a>
                     </td>
@@ -118,6 +148,6 @@
     </div>
     <br/>
 </div>
-
+<div th:fragment="report" id="reportModalHolder"></div>
 </body>
 </html>

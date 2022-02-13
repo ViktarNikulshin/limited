@@ -212,6 +212,11 @@ public class AddressServiceImpl implements AddressService {
         }
     }
 
+    @Override
+    public Address findAddressById(Integer id) {
+        return addressRepository.findById(id).orElse(new Address());
+    }
+
     public Address seFlat(String order, Address address) {
         if (order.contains("(K)") || order.contains("(К)")) {
             if (order.contains("кв.")) {
