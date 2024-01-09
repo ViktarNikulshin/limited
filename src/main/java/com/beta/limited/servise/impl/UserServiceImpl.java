@@ -5,7 +5,6 @@ import com.beta.limited.model.UserDto;
 import com.beta.limited.repository.RoleRepository;
 import com.beta.limited.repository.UserRepository;
 import com.beta.limited.servise.UserService;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -22,12 +21,17 @@ public class UserServiceImpl implements UserService {
     private final RoleRepository roleRepository;
 
     @Override
-    public User registerNewUserAccount(UserDto userDto) {
+    public List<User> getAllUser() {
+        return userRepository.findAll();
+    }
+
+    @Override
+    public void registerNewUserAccount(UserDto userDto) {
         User user = new User();
         user.setLogin(userDto.getLogin());
         user.setPassword(passwordEncoder.encode(userDto.getPassword()));
         user.setEmail(userDto.getEmail());
-        return userRepository.save(user);
+        userRepository.save(user);
     }
 
     @Override
