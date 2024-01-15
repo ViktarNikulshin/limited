@@ -9,6 +9,8 @@ public interface UserService {
 
     List<User> getAllUser();
 
+    User getUserById(Integer id);
+
     void registerNewUserAccount(UserDto user);
 
     User getUserByLogin(String login);
@@ -16,4 +18,8 @@ public interface UserService {
     User getUserByTelegramName(String name);
 
     List<User> getUsersByRoleRunner();
+
+    void updateUser(UserDto userDto);
+
+    void deleteUserById(Integer id);
 }

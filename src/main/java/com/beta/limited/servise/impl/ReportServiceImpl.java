@@ -4,12 +4,13 @@ import com.beta.limited.entity.Address;
 import com.beta.limited.entity.Reference;
 import com.beta.limited.entity.Report;
 import com.beta.limited.entity.User;
+import com.beta.limited.mapper.ReportMapper;
+import com.beta.limited.model.ReportDto;
 import com.beta.limited.repository.ReportRepository;
 import com.beta.limited.servise.AddressService;
 import com.beta.limited.servise.ReferenceService;
 import com.beta.limited.servise.ReportService;
 import com.beta.limited.servise.UserService;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,6 +31,7 @@ public class ReportServiceImpl implements ReportService {
     private final AddressService addressService;
     private final ReferenceService referenceService;
     private final UserService userService;
+    private final ReportMapper reportMapper;
 
     @Override
     @Transactional
@@ -134,6 +136,11 @@ public class ReportServiceImpl implements ReportService {
         report.setRunner(getUserByTelegramName(user));
         report.setDeliveryDate(new Date());
         createReport(report);
+    }
+
+    @Override
+    public void update(ReportDto reportDto) {
+        reportRepository.save(reportMapper.dtoToDomain(reportDto));
     }
 
     private String getPhone(String order) {

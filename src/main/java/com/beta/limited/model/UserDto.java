@@ -1,6 +1,5 @@
 package com.beta.limited.model;
 
-import com.beta.limited.entity.Role;
 import lombok.Data;
 
 import java.util.List;
@@ -13,5 +12,5 @@ public class UserDto {
     private String email;
     private String telegramName;
     private String name;
-    private List<Role> roles;
+    private List<RoleDto> roles;
 }

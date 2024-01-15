@@ -3,6 +3,7 @@ package com.beta.limited.servise;
 import com.beta.limited.entity.Address;
 import com.beta.limited.entity.Report;
 import com.beta.limited.entity.User;
+import com.beta.limited.model.ReportDto;
 
 import java.util.List;
 
@@ -29,4 +30,5 @@ public interface ReportService {
 
     void messageToReport(String order, String user) throws Exception;
 
+    void update(ReportDto reportDto);
 }
