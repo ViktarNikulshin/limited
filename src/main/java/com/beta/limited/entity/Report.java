@@ -2,6 +2,7 @@ package com.beta.limited.entity;
 
 import com.fasterxml.jackson.databind.annotation.JsonAppend;
 import lombok.Data;
+import lombok.ToString;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
@@ -30,6 +31,7 @@ public class Report {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "runner")
     private User runner;
-    @OneToOne(mappedBy = "report", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "report", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ToString.Exclude
     private Address address;
 }

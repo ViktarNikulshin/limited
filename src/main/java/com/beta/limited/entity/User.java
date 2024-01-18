@@ -21,6 +21,8 @@ public class User {
     private String email;
     @Column
     private String telegramName;
+    @Column
+    private String name;
     @ManyToMany(cascade = CascadeType.MERGE)
     @JoinTable(name = "user_role",
             joinColumns = {@JoinColumn(name = "USER_ID", referencedColumnName = "ID")},

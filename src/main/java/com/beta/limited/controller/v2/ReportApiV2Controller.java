@@ -1,6 +1,7 @@
 package com.beta.limited.controller.v2;
 
 
+import com.beta.limited.entity.Report;
 import com.beta.limited.mapper.ReportMapper;
 import com.beta.limited.model.ReportDto;
 import com.beta.limited.servise.ReportService;
@@ -26,10 +27,10 @@ public class ReportApiV2Controller {
 
     @GetMapping
     public List<ReportDto> getAllReport() {
-        return reportMapper.domainListToDtoList(reportService.findAllByDate())
+        return reportMapper.domainListToDtoList(reportService.findAllByDate()
                 .stream()
                 .sorted(Comparator.comparing(o -> o.getAddress().getRouting()))
-                .collect(Collectors.toList());
+                .collect(Collectors.toList()));
     }
 
     @GetMapping("/{id}")

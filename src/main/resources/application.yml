@@ -20,4 +20,10 @@ bot:
   name: VNikulshin_bot
   token: 1512700278:AAHworP0q1zZLRuh7VuiKtRhcqXnBsNWwXo
 
+logging:
+  level:
+    root: ERROR
+    org:
+      springframework: DEBUG
+
 

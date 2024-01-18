@@ -34,7 +34,6 @@ public class ReportServiceImpl implements ReportService {
     private final ReportMapper reportMapper;
 
     @Override
-    @Transactional
     public List<Report> findAllByDate() {
         return new ArrayList<>(reportRepository.findAllByDeliveryDateEqualsOrderByExecuted(new Date()));
     }

@@ -27,7 +27,7 @@ public class UserApiController {
     }
 
     @GetMapping
-    public List<UserDto> getUserAllUser() {
+    public List<UserDto> getAllUser() {
         return userMapper.domainListToDtoList(userService.getAllUser());
     }
 
@@ -44,5 +44,10 @@ public class UserApiController {
     @GetMapping("/delete/{id}")
     public void deleteUser(@PathVariable("id") Integer id){
         userService.deleteUserById(id);
+    }
+
+    @GetMapping("/runners")
+    public List<UserDto> geAllRunner() {
+        return userMapper.domainListToDtoList(userService.getUsersByRoleRunner());
     }
 }
