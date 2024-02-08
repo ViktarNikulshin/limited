@@ -1,6 +1,7 @@
 package com.beta.limited.servise;
 
 import com.beta.limited.entity.User;
+import com.beta.limited.model.AuthUserDto;
 import com.beta.limited.model.UserDto;
 
 import java.util.List;
@@ -22,4 +23,6 @@ public interface UserService {
     void updateUser(UserDto userDto);
 
     void deleteUserById(Integer id);
+
+    AuthUserDto getAuthUser(UserDto userDto);
 }

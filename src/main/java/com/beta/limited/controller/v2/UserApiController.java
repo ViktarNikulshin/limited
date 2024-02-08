@@ -5,6 +5,7 @@ import com.beta.limited.mapper.UserMapper;
 import com.beta.limited.model.UserDto;
 import com.beta.limited.servise.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
